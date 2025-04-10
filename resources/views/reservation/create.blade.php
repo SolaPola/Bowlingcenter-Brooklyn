@@ -15,7 +15,7 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <a href="{{ route('reservation.index') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Back to List</a>
+                <a href="{{ route('reservations.index') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Back to List</a>
             </div>
         </div>
     </x-slot>
@@ -24,7 +24,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('reservation.store') }}">
+                    <form method="POST" action="{{ route('reservations.store') }}">
                         @csrf
                         
                         <!-- Court Selection -->
@@ -43,9 +43,9 @@
                             @enderror
                         </div>
 
-                        <!-- Date Selection -->
+                        <!-- Datum Selectie -->
                         <div class="mb-4">
-                            <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                            <label for="date" class="block text-sm font-medium text-gray-700">Datum</label>
                             <input type="date" name="date" id="date" value="{{ old('date') }}" min="{{ date('Y-m-d') }}" 
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             @error('date')
@@ -53,11 +53,11 @@
                             @enderror
                         </div>
 
-                        <!-- Time Slot Selection -->
+                        <!-- Tijdvak Selectie -->
                         <div class="mb-4">
-                            <label for="timeslotId" class="block text-sm font-medium text-gray-700">Select Time Slot</label>
+                            <label for="timeslotId" class="block text-sm font-medium text-gray-700">Selecteer Tijdvak</label>
                             <select name="timeslotId" id="timeslotId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <option value="">Select a time slot</option>
+                                <option value="">Kies een tijdvak</option>
                                 @foreach ($timeslots as $timeslot)
                                     <option value="{{ $timeslot->id }}" {{ old('timeslotId') == $timeslot->id ? 'selected' : '' }}>
                                         {{ $timeslot->startTime }} - {{ $timeslot->endTime }}
@@ -69,7 +69,7 @@
                             @enderror
                         </div>
 
-                        <!-- Duration in Minutes -->
+                        <!-- Duur in Minuten -->
                         <div class="mb-4">
                             <label for="minutes" class="block text-sm font-medium text-gray-700">Duration (minutes)</label>
                             <select name="minutes" id="minutes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
@@ -105,7 +105,7 @@
 
                         <!-- Submit Button -->
                         <div class="flex items-center justify-between mt-6">
-                            <a href="{{ route('reservation.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            <a href="{{ route('reservations.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Cancel
                             </a>
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
