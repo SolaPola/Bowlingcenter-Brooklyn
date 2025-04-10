@@ -19,7 +19,7 @@
                         {{ __('Reserveren') }}
                     </x-nav-link>
                     <x-nav-link :href="route('order.index')" :active="request()->routeIs('order.index')">
-                        Order Overview
+                        {{ __('Bestellingen') }}
                     </x-nav-link>
                 </div>
             </div>
