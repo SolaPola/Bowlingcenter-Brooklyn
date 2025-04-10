@@ -30,52 +30,112 @@ class DatabaseSeeder extends Seeder
         // Create contacts
         $contacts = Contact::factory(20)->create();
         
-        // Create test user manually with existing person and contact
-        $testPerson = $people->first();
-        $testContact = $contacts->first();
-        
-        $testUser = User::create([
-            'personId' => $testPerson->id,
-            'contactId' => $testContact->id,
-            'username' => 'testuser',
-            'password' => Hash::make('password'),
+        // Maak een admin en testgebruiker (specifieke users)
+        $person = Person::factory()->create([
+            'firstName' => fake()->firstName,
+            'infix' => fake()->optional()->lastName,
+            'lastName' => fake()->lastName,
+        ]);
+
+        $customer = Customer::create([
+            'personId' => $person->id,
+            'scoreId' => Score::factory()->create()->id, // Add a score relationship
             'isActive' => true,
-            'note' => 'Test user account',
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
-        
-        // Create other users with UserFactory
-        $users = User::factory(9)->create();
+
+        Contact::create([
+            'email' => 'test@gmail.com',
+            'phoneNumber' => fake()->phoneNumber,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+
+        User::create([
+            'personId' => $person->id,
+            'name' => 'TestUser',
+            'password' => Hash::make('Test1234'),
+        ]);
+
+        $adminPerson = Person::factory()->create([
+            'firstName' => fake()->firstName,
+            'infix' => fake()->optional()->lastName,
+            'lastName' => fake()->lastName,
+        ]);
+
+        $adminCustomer = Customer::create([
+            'personId' => $adminPerson->id,
+            'scoreId' => Score::factory()->create()->id, // Add a score relationship
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+
+        Contact::create([
+            'email' => 'admin@gmail.com',
+            'phoneNumber' => fake()->phoneNumber,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+
+        $adminUser = User::create([
+            'personId' => $adminPerson->id,
+            'name' => 'AdminUser',
+            'password' => Hash::make('Admin1234'),
+        ]);
+
+        $adminRole = Role::create([
+            'userId' => $adminUser->id,
+            'name' => 'Admin',
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+
+        // Associate the role with the user
+        $adminUser->roles()->save($adminRole);
+
+        Employee::create([
+            'personId' => $adminPerson->id,
+            'function' => 'System Management',
+            'employee_type' => 'Administrator',
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+
+        // Nu de rest van de gebruikers (gekoppeld aan een persoon)
+        $users = User::factory()->count(10)->create();
         $allUsers = User::all();
+
+        // Werknemers aanmaken (gekoppeld aan een persoon)
+        $employees = Employee::factory()->count(10)->create();
         
         // Seed roles for users
         foreach ($allUsers as $user) {
             Role::factory()->create([
                 'userId' => $user->id,
+                'createdAt' => now(),
+                'updatedAt' => now(),
             ]);
-        }
-        
-        // Seed contacts for some of the people
-        foreach ($people->random(15) as $person) {
-            Contact::factory()->create();
         }
         
         // Seed scores
         $scores = Score::factory(10)->create();
         
-        // Seed customers
-        foreach ($people->random(10) as $person) {
+        // Seed customers for remaining people who don't already have associations
+        $usedPeopleIds = Customer::pluck('personId')->toArray();
+        $availablePeople = $people->filter(function ($person) use ($usedPeopleIds) {
+            return !in_array($person->id, $usedPeopleIds);
+        })->take(10);
+        
+        foreach ($availablePeople as $person) {
             Customer::factory()->create([
                 'personId' => $person->id,
                 'scoreId' => $scores->random()->id,
-            ]);
-        }
-        
-        // Seed employees
-        foreach ($people->random(5) as $person) {
-            Employee::factory()->create([
-                'personId' => $person->id,
+                'createdAt' => now(),
+                'updatedAt' => now(),
             ]);
         }
         

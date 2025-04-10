@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Person extends Model
 {
     use HasFactory;
 
     protected $table = 'person';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'firstName', 
@@ -21,20 +23,19 @@ class Person extends Model
         'updatedAt'
     ];
 
-    public $timestamps = false;
-
-    public function user()
+    // Define relationships
+    public function customer()
     {
-        return $this->hasOne(User::class, 'personId');
+        return $this->hasOne(Customer::class, 'personId');
     }
-
+    
     public function employee()
     {
         return $this->hasOne(Employee::class, 'personId');
     }
 
-    public function customer()
+    public function users()
     {
-        return $this->hasOne(Customer::class, 'personId');
+        return $this->hasMany(User::class, 'personId');
     }
 }

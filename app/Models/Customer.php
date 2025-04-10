@@ -2,24 +2,28 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Person;
-use App\Models\Score;
-use App\Models\Reservation;
+use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
     use HasFactory;
-    
-    protected $table = 'customer';
 
-    protected $fillable = [
-        'personId', 'scoreId', 'membershipType', 'isActive', 'note', 'createdAt', 'updatedAt'
-    ];
+    protected $table = 'customer';
 
     public $timestamps = false;
 
+    protected $fillable = [
+        'personId',
+        'scoreId',
+        'membershipType',
+        'isActive',
+        'note',
+        'createdAt',
+        'updatedAt'
+    ];
+
+    // Define relationships
     public function person()
     {
         return $this->belongsTo(Person::class, 'personId');
@@ -33,5 +37,10 @@ class Customer extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class, 'customerId');
+    }
+
+    public function contacts()
+    {
+        return $this->hasMany(Contact::class, 'customerId');
     }
 }

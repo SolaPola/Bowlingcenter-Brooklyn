@@ -2,25 +2,25 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Str;
 use App\Models\Timeslot;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TimeslotFactory extends Factory
 {
+    protected $model = Timeslot::class;
+
     public function definition(): array
     {
-        $start = fake()->time('H:i:s');
-        $end = date('H:i:s', strtotime($start . ' +1 hour'));
-
+        $startHour = $this->faker->numberBetween(10, 21);
+        $startTime = sprintf('%02d:00:00', $startHour);
+        $endTime = sprintf('%02d:00:00', $startHour + 1);
+        
         return [
-            'startTime' => $start,
-            'endTime' => $end,
-            'day' => fake()->dayOfWeek(),
-            'isActive' => true,
-            'note' => fake()->optional()->sentence(),
+            'startTime' => $startTime,
+            'endTime' => $endTime,
+            'day' => $this->faker->randomElement(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']),
+            'isActive' => $this->faker->boolean(90),
+            'note' => $this->faker->boolean(30) ? $this->faker->sentence() : null,
             'createdAt' => now(),
             'updatedAt' => now(),
         ];

@@ -35,28 +35,48 @@ return new class extends Migration
             $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('user', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
             $table->engine = 'InnoDB';
-            $table->id()->unsigned();
-            $table->foreignId('personId')->constrained('person');
-            $table->foreignId('contactId')->constrained('contact');
-            $table->string('username', 100)->unique();
-            $table->string('password', 255);
-            $table->boolean('isActive')->default(true);
-            $table->string('note', 255)->nullable();
-            $table->dateTime('createdAt', 6);
-            $table->dateTime('updatedAt', 6);
+            $table->foreignId('contactId')->nullable()->constrained('contact')->onDelete('cascade');
+            $table->foreignId('personId')->nullable()->constrained('person')->onDelete('cascade');
+            $table->string('name')->unique();
+            $table->string('email')->unique()->after('name');
+            $table->string('password');
+            $table->boolean('is_logged_in')->default(false);
+            $table->timestamp('logged_in')->nullable();
+            $table->timestamp('logged_out')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->text('note')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('role', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('userId')->constrained('user');
-            $table->string('name', 50);
+            $table->foreignId('userId')->constrained('users')->onDelete('cascade');
+            $table->string('name');
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
             $table->dateTime('updatedAt', 6);
+            $table->timestamps();
         });
 
         Schema::create('employee', function (Blueprint $table) {
@@ -64,7 +84,7 @@ return new class extends Migration
             $table->id()->unsigned();
             $table->foreignId('personId')->constrained('person');
             $table->string('function', 100)->nullable();
-            $table->string('department', 100)->nullable();
+            $table->enum('employee_type', ['Manager', 'Administrator', 'Desk Employee']);
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
@@ -157,8 +177,10 @@ return new class extends Migration
         Schema::dropIfExists('score');
         Schema::dropIfExists('employee');
         Schema::dropIfExists('role');
-        Schema::dropIfExists('user');
         Schema::dropIfExists('contact');
         Schema::dropIfExists('person');
+        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

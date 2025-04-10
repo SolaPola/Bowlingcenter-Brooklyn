@@ -9,14 +9,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CustomerFactory extends Factory
 {
+    protected $model = Customer::class;
+
     public function definition(): array
     {
         return [
             'personId' => Person::factory(),
             'scoreId' => Score::factory(),
-            'membershipType' => fake()->randomElement(['Basic', 'Premium', 'VIP']),
-            'isActive' => true,
-            'note' => fake()->optional()->sentence(),
+            'membershipType' => $this->faker->randomElement(['Standard', 'Premium', 'VIP']),
+            'isActive' => $this->faker->boolean(80), // 80% chance of being active
+            'note' => $this->faker->optional(0.3)->sentence(),
             'createdAt' => now(),
             'updatedAt' => now(),
         ];

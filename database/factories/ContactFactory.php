@@ -7,26 +7,16 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ContactFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
     protected $model = Contact::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
             'email' => $this->faker->unique()->safeEmail(),
-            'phoneNumber' => substr($this->faker->numerify('##########'), 0, 15), // Ensure it's within 15 chars
-            'address' => $this->faker->address(),
-            'isActive' => true,
-            'note' => $this->faker->sentence(),
+            'phoneNumber' => $this->faker->boolean(80) ? $this->faker->numerify('##########') : null,
+            'address' => $this->faker->boolean(80) ? $this->faker->address() : null,
+            'isActive' => $this->faker->boolean(90),
+            'note' => $this->faker->boolean(30) ? $this->faker->sentence() : null,
             'createdAt' => now(),
             'updatedAt' => now(),
         ];
