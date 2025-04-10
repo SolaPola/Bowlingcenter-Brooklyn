@@ -24,6 +24,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
+                    @if(session('error'))
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <span class="block sm:inline">{{ session('error') }}</span>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('reservations.store') }}">
                         @csrf
                         
@@ -69,6 +75,12 @@
                             @enderror
                         </div>
 
+                        <!-- Availability Status -->
+                        <div id="availabilityStatus" class="mb-4 hidden">
+                            <p class="text-sm font-medium text-gray-700">Beschikbaarheid:</p>
+                            <div id="availabilityMessage" class="mt-1 p-2 rounded-md"></div>
+                        </div>
+
                         <!-- Duur in Minuten -->
                         <div class="mb-4">
                             <label for="minutes" class="block text-sm font-medium text-gray-700">Duur (minuten)</label>
@@ -93,6 +105,19 @@
                             @enderror
                         </div>
 
+                        <!-- Status -->
+                        <div class="mb-4">
+                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                            <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                <option value="pending" {{ old('status') == 'pending' ? 'selected' : '' }}>In behandeling</option>
+                                <option value="confirmed" {{ old('status') == 'confirmed' ? 'selected' : '' }}>Bevestigd</option>
+                                <option value="cancelled" {{ old('status') == 'cancelled' ? 'selected' : '' }}>Geannuleerd</option>
+                            </select>
+                            @error('status')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Extra Opmerkingen -->
                         <div class="mb-4">
                             <label for="note" class="block text-sm font-medium text-gray-700">Extra Opmerkingen</label>
@@ -108,7 +133,7 @@
                             <a href="{{ route('reservations.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Annuleren
                             </a>
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            <button type="submit" id="submitButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Reservering Aanmaken
                             </button>
                         </div>
@@ -134,6 +159,89 @@
             dataContainer.classList.add('hidden');
             errorContainer.classList.remove('hidden');
         }
+    });
+    
+    // Add JavaScript to check court availability
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('date');
+        const timeslotSelect = document.getElementById('timeslotId');
+        const courtSelect = document.getElementById('courtId');
+        const availabilityStatus = document.getElementById('availabilityStatus');
+        const availabilityMessage = document.getElementById('availabilityMessage');
+        const submitButton = document.getElementById('submitButton');
+        
+        function checkAvailability() {
+            const date = dateInput.value;
+            const timeslotId = timeslotSelect.value;
+            
+            if (!date || !timeslotId) {
+                availabilityStatus.classList.add('hidden');
+                return;
+            }
+            
+            fetch(`/reservations/check-availability?date=${date}&timeslotId=${timeslotId}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Clear existing options
+                    while (courtSelect.options.length > 1) {
+                        courtSelect.remove(1);
+                    }
+                    
+                    // Update court availability and add options
+                    let availableCourts = 0;
+                    data.data.forEach(court => {
+                        const option = new Option(`Baan ${court.number} (${court.status})`, court.id);
+                        option.disabled = court.status !== 'Available';
+                        courtSelect.add(option);
+                        
+                        if (court.status === 'Available') {
+                            availableCourts++;
+                        }
+                    });
+                    
+                    availabilityStatus.classList.remove('hidden');
+                    if (availableCourts > 0) {
+                        availabilityMessage.textContent = `${availableCourts} banen beschikbaar voor deze datum en tijd.`;
+                        availabilityMessage.classList.remove('bg-red-100', 'text-red-700');
+                        availabilityMessage.classList.add('bg-green-100', 'text-green-700');
+                        submitButton.disabled = false;
+                    } else {
+                        availabilityMessage.textContent = 'Geen banen beschikbaar voor deze datum en tijd.';
+                        availabilityMessage.classList.remove('bg-green-100', 'text-green-700');
+                        availabilityMessage.classList.add('bg-red-100', 'text-red-700');
+                        submitButton.disabled = true;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error checking availability:', error);
+            });
+        }
+        
+        dateInput.addEventListener('change', checkAvailability);
+        timeslotSelect.addEventListener('change', checkAvailability);
+
+        // Add form submission feedback
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            if (!dateInput.value || !timeslotSelect.value || !courtSelect.value) {
+                e.preventDefault();
+                alert('Vul alle verplichte velden in');
+                return;
+            }
+            
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Bezig met verwerken...';
+            
+            // Form will submit normally and redirect to index is handled by controller
+        });
     });
 </script>
 

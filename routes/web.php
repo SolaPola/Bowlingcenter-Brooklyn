@@ -24,6 +24,8 @@ Route::get('/dashboard', function () {
     Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
 
 
+
+
 // Reservation routes with auth middleware
 Route::middleware(['auth'])->group(function () {
    
