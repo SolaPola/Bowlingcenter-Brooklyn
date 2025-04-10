@@ -24,12 +24,12 @@ class UserController extends Controller
         $page = $request->input('page', 1);
         $offset = ($page - 1) * $perPage;
 
-        $total = DB::table('users')->count();
+        $total = DB::table('user')->count();
 
         // try catch looks if the SP exists
         try{
             //reads the users from the database
-            $users = DB::table('users')
+            $users = DB::table('user')
                 ->select('id', 'username','name', 'email', 'role', 'first_name', 'infix', 'last_name', 'birth_date')
                 ->orderBy('id', 'asc')
                 ->offset($offset)

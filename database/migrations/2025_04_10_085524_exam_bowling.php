@@ -142,6 +142,9 @@ return new class extends Migration
             $table->dateTime('createdAt', 6);
             $table->dateTime('updatedAt', 6);
         });
+        Schema::table('user', function (Blueprint $table) {
+            $table->string('email', 255)->unique()->after('username');
+        });
     }
 
     /**

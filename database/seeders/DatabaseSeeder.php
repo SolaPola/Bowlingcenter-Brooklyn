@@ -18,6 +18,7 @@ use App\Models\Order;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -47,8 +48,9 @@ class DatabaseSeeder extends Seeder
             'updatedAt' => now(),
         ]);
         
+        
         // Create other users with UserFactory
-        $users = User::factory(9)->create();
+        $user = User::factory(9)->create();
         $allUsers = User::all();
         
         // Seed roles for users
