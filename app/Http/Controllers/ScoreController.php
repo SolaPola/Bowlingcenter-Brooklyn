@@ -10,10 +10,10 @@ class ScoreController extends Controller
     // Toon de lijst van scores
     public function index()
     {
-        $scores = DB::table('scores')
-            ->join('person', 'scores.personId', '=', 'person.id')
-            ->join('customer', 'scores.id', '=', 'customer.scoreId')
-            ->select('scores.id', 'person.firstName', 'person.lastName', 'scores.amount', 'customer.membershipType')
+        $scores = DB::table('score') // Changed from 'scores' to 'score'
+            ->join('person', 'score.personId', '=', 'person.id')
+            ->join('customer', 'score.id', '=', 'customer.scoreId')
+            ->select('score.id', 'person.firstName', 'person.lastName', 'score.amount', 'customer.membershipType')
             ->get();
 
         return view('score.index', compact('scores'));
