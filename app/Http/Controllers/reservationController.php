@@ -39,7 +39,7 @@ class ReservationController extends Controller
             return view('reservation.create', compact('courts', 'timeslots'));
         } catch (Exception $e) {
             Log::error('Error in create form: ' . $e->getMessage());
-            return redirect()->route('reservations.index')
+            return redirect()->route('reservation.index')
                            ->with('error', 'Er is een fout opgetreden bij het laden van het formulier.');
         }
     }
@@ -78,7 +78,7 @@ class ReservationController extends Controller
             DB::commit();
             
             Log::info('New reservation created with ID: ' . $reservation->id);
-            return redirect()->route('reservations.show', $reservation->id)
+            return redirect()->route('reservation.show', $reservation->id)
                             ->with('success', 'Reservation created successfully.');
         } catch (Exception $e) {
             DB::rollBack();
@@ -99,7 +99,7 @@ class ReservationController extends Controller
             return view('reservation.show', compact('reservation'));
         } catch (Exception $e) {
             Log::error('Error showing reservation details: ' . $e->getMessage());
-            return redirect()->route('reservations.index')
+            return redirect()->route('reservation.index')
                            ->with('error', 'Er is een fout opgetreden bij het tonen van de reservering.');
         }
     }
@@ -117,7 +117,7 @@ class ReservationController extends Controller
             return view('reservation.edit', compact('reservation', 'courts', 'timeslots'));
         } catch (Exception $e) {
             Log::error('Error in edit form: ' . $e->getMessage());
-            return redirect()->route('reservations.index')
+            return redirect()->route('reservation.index')
                            ->with('error', 'Er is een fout opgetreden bij het laden van het formulier.');
         }
     }
@@ -154,7 +154,7 @@ class ReservationController extends Controller
             DB::commit();
             
             Log::info('Reservation updated with ID: ' . $id);
-            return redirect()->route('reservations.show', $reservation->id)
+            return redirect()->route('reservation.show', $reservation->id)
                             ->with('success', 'Reservation updated successfully.');
         } catch (Exception $e) {
             DB::rollBack();
@@ -181,7 +181,7 @@ class ReservationController extends Controller
             DB::commit();
             
             Log::info('Reservation deactivated with ID: ' . $id);
-            return redirect()->route('reservations.index')
+            return redirect()->route('reservation.index')
                             ->with('success', 'Reservation deactivated successfully.');
         } catch (Exception $e) {
             DB::rollBack();
