@@ -15,7 +15,7 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <a href="{{ route('reservations.show', $reservation->id) }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Terug naar Details</a>
+                <a href="{{ route('reservations.index', $reservation->id) }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Terug naar lijst</a>
             </div>
         </div>
     </x-slot>
@@ -24,7 +24,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('reservations.update', $reservation->id) }}">
+                    <form method="POST" action="{{ route('reservations.update', ['id' => $reservation->id, 'redirect' => 'index']) }}">
                         @csrf
                         @method('PATCH')
                         
@@ -121,7 +121,7 @@
                                 Annuleren
                             </a>
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                Reservering Bijwerken
+                                Bijwerken
                             </button>
                         </div>
                     </form>
