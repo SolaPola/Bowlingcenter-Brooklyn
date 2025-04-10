@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <h2 class="font-semibold text-xl text-white-900 leading-tight">
-                {{ __('Edit Reservation') }}
+                {{ __('Reservering Bewerken') }}
             </h2>
             <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                 <label class="flex items-center">
@@ -15,7 +15,7 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <a href="{{ route('reservation.show', $reservation->id) }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Back to Details</a>
+                <a href="{{ route('reservations.show', $reservation->id) }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Terug naar Details</a>
             </div>
         </div>
     </x-slot>
@@ -24,17 +24,17 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('reservation.update', $reservation->id) }}">
+                    <form method="POST" action="{{ route('reservations.update', $reservation->id) }}">
                         @csrf
                         @method('PATCH')
                         
                         <!-- Court Selection -->
                         <div class="mb-4">
-                            <label for="courtId" class="block text-sm font-medium text-gray-700">Select Court</label>
+                            <label for="courtId" class="block text-sm font-medium text-gray-700">Selecteer Baan</label>
                             <select name="courtId" id="courtId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                 @foreach ($courts as $court)
                                     <option value="{{ $court->id }}" {{ (old('courtId', $reservation->courtId) == $court->id) ? 'selected' : '' }}>
-                                        {{ $court->name }} - {{ $court->description }}
+                                        {{ $court->number }}
                                     </option>
                                 @endforeach
                             </select>
@@ -45,7 +45,7 @@
 
                         <!-- Date Selection -->
                         <div class="mb-4">
-                            <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                            <label for="date" class="block text-sm font-medium text-gray-700">Datum</label>
                             <input type="date" name="date" id="date" value="{{ old('date', $reservation->date) }}"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             @error('date')
@@ -55,7 +55,7 @@
 
                         <!-- Time Slot Selection -->
                         <div class="mb-4">
-                            <label for="timeslotId" class="block text-sm font-medium text-gray-700">Select Time Slot</label>
+                            <label for="timeslotId" class="block text-sm font-medium text-gray-700">Selecteer Tijdslot</label>
                             <select name="timeslotId" id="timeslotId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                 @foreach ($timeslots as $timeslot)
                                     <option value="{{ $timeslot->id }}" {{ (old('timeslotId', $reservation->timeslotId) == $timeslot->id) ? 'selected' : '' }}>
@@ -70,12 +70,12 @@
 
                         <!-- Duration in Minutes -->
                         <div class="mb-4">
-                            <label for="minutes" class="block text-sm font-medium text-gray-700">Duration (minutes)</label>
+                            <label for="minutes" class="block text-sm font-medium text-gray-700">Duur (minuten)</label>
                             <select name="minutes" id="minutes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <option value="30" {{ (old('minutes', $reservation->minutes) == 30) ? 'selected' : '' }}>30 minutes</option>
-                                <option value="60" {{ (old('minutes', $reservation->minutes) == 60) ? 'selected' : '' }}>1 hour</option>
-                                <option value="90" {{ (old('minutes', $reservation->minutes) == 90) ? 'selected' : '' }}>1.5 hours</option>
-                                <option value="120" {{ (old('minutes', $reservation->minutes) == 120) ? 'selected' : '' }}>2 hours</option>
+                                <option value="30" {{ (old('minutes', $reservation->minutes) == 30) ? 'selected' : '' }}>30 minuten</option>
+                                <option value="60" {{ (old('minutes', $reservation->minutes) == 60) ? 'selected' : '' }}>1 uur</option>
+                                <option value="90" {{ (old('minutes', $reservation->minutes) == 90) ? 'selected' : '' }}>1,5 uur</option>
+                                <option value="120" {{ (old('minutes', $reservation->minutes) == 120) ? 'selected' : '' }}>2 uur</option>
                             </select>
                             @error('minutes')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -84,7 +84,7 @@
 
                         <!-- Number of People -->
                         <div class="mb-4">
-                            <label for="numberOfPeople" class="block text-sm font-medium text-gray-700">Number of People</label>
+                            <label for="numberOfPeople" class="block text-sm font-medium text-gray-700">Aantal Personen</label>
                             <input type="number" name="numberOfPeople" id="numberOfPeople" value="{{ old('numberOfPeople', $reservation->numberOfPeople) }}" min="1" max="8"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             @error('numberOfPeople')
@@ -96,9 +96,9 @@
                         <div class="mb-4">
                             <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
                             <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <option value="pending" {{ (old('status', $reservation->status) == 'pending') ? 'selected' : '' }}>Pending</option>
-                                <option value="confirmed" {{ (old('status', $reservation->status) == 'confirmed') ? 'selected' : '' }}>Confirmed</option>
-                                <option value="canceled" {{ (old('status', $reservation->status) == 'canceled') ? 'selected' : '' }}>Canceled</option>
+                                <option value="pending" {{ (old('status', $reservation->status) == 'pending') ? 'selected' : '' }}>In behandeling</option>
+                                <option value="confirmed" {{ (old('status', $reservation->status) == 'confirmed') ? 'selected' : '' }}>Bevestigd</option>
+                                <option value="canceled" {{ (old('status', $reservation->status) == 'canceled') ? 'selected' : '' }}>Geannuleerd</option>
                             </select>
                             @error('status')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -107,7 +107,7 @@
 
                         <!-- Notes -->
                         <div class="mb-4">
-                            <label for="note" class="block text-sm font-medium text-gray-700">Additional Notes</label>
+                            <label for="note" class="block text-sm font-medium text-gray-700">Extra Opmerkingen</label>
                             <textarea name="note" id="note" rows="3" 
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ old('note', $reservation->note) }}</textarea>
                             @error('note')
@@ -117,11 +117,11 @@
 
                         <!-- Submit Button -->
                         <div class="flex items-center justify-between mt-6">
-                            <a href="{{ route('reservation.show', $reservation->id) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                Cancel
+                            <a href="{{ route('reservations.show', $reservation->id) }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Annuleren
                             </a>
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                Update Reservation
+                                Reservering Bijwerken
                             </button>
                         </div>
                     </form>
