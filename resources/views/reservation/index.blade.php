@@ -17,7 +17,7 @@
 
                     <div class="flex justify-between mb-6">
                         <h3 class="text-lg font-semibold">Your Reservations</h3>
-                        <a href="{{ route('reservation.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <a href="{{ route('reservations.create') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             New Reservation
                         </a>
                     </div>
@@ -52,9 +52,9 @@
                                             </span>
                                         </td>
                                         <td class="py-3 px-4 border-b border-gray-200">
-                                            <a href="{{ route('reservation.show', $reservation->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
-                                            <a href="{{ route('reservation.edit', $reservation->id) }}" class="text-green-600 hover:text-green-900 mr-3">Edit</a>
-                                            <form method="POST" action="{{ route('reservation.destroy', $reservation->id) }}" class="inline">
+                                            <a href="{{ route('reservations.show', $reservation->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">View</a>
+                                            <a href="{{ route('reservations.edit', $reservation->id) }}" class="text-green-600 hover:text-green-900 mr-3">Edit</a>
+                                            <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}" class="inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to cancel this reservation?')">Cancel</button>

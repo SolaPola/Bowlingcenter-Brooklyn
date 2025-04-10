@@ -13,7 +13,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
  // Use the resource route which defines all CRUD routes
- Route::resource('reservation', ReservationController::class);
+ Route::resource('reservations', ReservationController::class);
 
 
 // Reservation routes with auth middleware

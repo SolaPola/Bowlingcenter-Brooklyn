@@ -59,7 +59,7 @@ class ReservationController extends Controller
         $reservation->updatedAt = now();
         $reservation->save();
 
-        return redirect()->route('reservation.show', $reservation->id)
+        return redirect()->route('reservations.show', $reservation->id)
                         ->with('success', 'Reservation created successfully.');
     }
 
@@ -110,7 +110,7 @@ class ReservationController extends Controller
         $reservation->updatedAt = now();
         $reservation->save();
 
-        return redirect()->route('reservation.show', $reservation->id)
+        return redirect()->route('reservations.show', $reservation->id)
                         ->with('success', 'Reservation updated successfully.');
     }
 
@@ -124,7 +124,7 @@ class ReservationController extends Controller
         $reservation->updatedAt = now();
         $reservation->save();
 
-        return redirect()->route('reservation.index')
+        return redirect()->route('reservations.index')
                         ->with('success', 'Reservation deactivated successfully.');
     }
 }
