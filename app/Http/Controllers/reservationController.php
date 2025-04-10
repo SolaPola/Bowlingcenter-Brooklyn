@@ -221,8 +221,8 @@ class ReservationController extends Controller
             $result = DB::select('CALL sp_cancel_reservation(?)', [$id]);
             
             Log::info('Reservation canceled with ID: ' . $id);
-            return redirect()->route('reservation.index')
-                            ->with('success', 'Reservation canceled successfully.');
+            return redirect()->route('reservations.index')
+                            ->with('success', 'De reservering is succesvol geannuleerd.');
         } catch (Exception $e) {
             Log::error('Error canceling reservation: ' . $e->getMessage());
             return redirect()->back()
