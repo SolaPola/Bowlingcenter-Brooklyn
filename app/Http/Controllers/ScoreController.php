@@ -10,9 +10,9 @@ class ScoreController extends Controller
     // Toon de lijst van scores
     public function index()
     {
-        $scores = DB::table('score') // Changed from 'scores' to 'score'
-            ->join('person', 'score.personId', '=', 'person.id')
+        $scores = DB::table('score')
             ->join('customer', 'score.id', '=', 'customer.scoreId')
+            ->join('person', 'customer.personId', '=', 'person.id') // Updated join to use customer.personId
             ->select('score.id', 'person.firstName', 'person.lastName', 'score.amount', 'customer.membershipType')
             ->get();
 

@@ -12,6 +12,7 @@ class CreateInsertPersonScoreMembershipProcedure extends Migration
      */
     public function up()
     {
+        DB::unprepared('DROP PROCEDURE IF EXISTS InsertPersonScoreMembership'); // Drop procedure if it exists
         DB::unprepared('
             CREATE PROCEDURE InsertPersonScoreMembership(
                 IN firstName VARCHAR(100),
@@ -39,6 +40,7 @@ class CreateInsertPersonScoreMembershipProcedure extends Migration
             END
         ');
 
+        DB::unprepared('DROP PROCEDURE IF EXISTS EditPersonScoreMembership'); // Drop procedure if it exists
         DB::unprepared('
             CREATE PROCEDURE EditPersonScoreMembership(
                 IN personId BIGINT,
