@@ -48,8 +48,8 @@
                                     @foreach ($reservations as $reservation)
                                         <tr class="border-b border-gray-200 hover:bg-gray-50">
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->date }}</td>
-                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->timeslot->startTime)) }}</td>
-                                            <td class="py-3 px-6 text-left">{{ $reservation->court->number }}</td>
+                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->startTime)) }}</td>
+                                            <td class="py-3 px-6 text-left">{{ $reservation->courtNumber }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->minutes }} minuten</td>
                                             <td class="py-3 px-6 text-center">
                                                 @if($reservation->status === 'Betaald')

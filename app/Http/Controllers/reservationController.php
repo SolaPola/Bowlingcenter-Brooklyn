@@ -10,16 +10,37 @@ use App\Models\Timeslot;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ReservationController extends Controller
 {
     /**
      * Display a listing of the reservations.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $reservations = DB::select('CALL sp_get_all_reservations()');
+            // Get all reservations from stored procedure
+            $allReservations = DB::select('CALL sp_get_all_reservations()');
+            
+            // Get current page from request query
+            $currentPage = $request->input('page', 1);
+            
+            // Number of items per page
+            $perPage = 10;
+            
+            // Slice the collection to get the items for the current page
+            $currentPageItems = array_slice($allReservations, ($currentPage - 1) * $perPage, $perPage);
+            
+            // Create our paginator and pass it to the view
+            $reservations = new LengthAwarePaginator(
+                $currentPageItems,
+                count($allReservations),
+                $perPage,
+                $currentPage,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+            
             return view('reservation.index', compact('reservations'));
         } catch (Exception $e) {
             Log::error('Error in reservation index: ' . $e->getMessage());
