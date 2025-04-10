@@ -67,7 +67,7 @@
 
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Tijdslot</p>
-                                <p class="mt-1">{{ $reservation->timeslot->startTime }} - {{ $reservation->timeslot->endTime }}</p>
+                                <p class="mt-1">{{ $reservation->startTime }} - {{ $reservation->endTime }}</p>
                             </div>
 
                             <div>
@@ -77,7 +77,7 @@
 
                             <div>
                                 <p class="text-sm font-medium text-gray-600">Baan</p>
-                                <p class="mt-1">{{ $reservation->court->name }} ({{ $reservation->court->description }})</p>
+                                <p class="mt-1">Baan {{ $reservation->courtNumber }}</p>
                             </div>
 
                             <div>
@@ -92,7 +92,7 @@
                         </div>
                     </div>
 
-                    @if(count($reservation->orders) > 0)
+                    @if(isset($reservations) && count($reservation) > 0)
                     <div class="mt-8">
                         <h4 class="text-lg font-medium mb-4">Gerelateerde Bestellingen</h4>
                         <table class="min-w-full bg-white">
@@ -104,7 +104,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($reservation->orders as $order)
+                                @foreach($reservations as $order)
                                 <tr>
                                     <td class="py-3 px-4 border-b border-gray-200">{{ $order->orderNumber }}</td>
                                     <td class="py-3 px-4 border-b border-gray-200">{{ $order->orderDate }}</td>

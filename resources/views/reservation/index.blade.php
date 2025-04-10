@@ -73,6 +73,11 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            
+                            <!-- Pagination Links -->
+                            <div class="px-6 py-4">
+                                {{ $reservations->links() }}
+                            </div>
                         @else
                             <div class="p-4">
                                 <p class="bg-red-500 text-white p-4 rounded mb-4">Geen reserveringen gevonden.</p>
@@ -119,5 +124,32 @@
 
     .toggle-checkbox:checked+.toggle-label {
         background-color: #38A169;
+    }
+    
+    /* Pagination Styling */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+    }
+    
+    .pagination > div {
+        display: flex;
+        align-items: center;
+    }
+    
+    .pagination span.px-4, .pagination a.px-4 {
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        margin: 0 0.25rem;
+    }
+    
+    .pagination span.bg-blue-50 {
+        background-color: #3b82f6;
+        color: white;
+    }
+    
+    .pagination a:hover {
+        background-color: #f3f4f6;
     }
 </style>

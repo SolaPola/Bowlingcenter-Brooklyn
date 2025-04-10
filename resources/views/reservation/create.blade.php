@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <h2 class="font-semibold text-xl text-white-900 leading-tight">
-                {{ __('Create Reservation') }}
+                {{ __('Nieuwe Reservering') }}
             </h2>
             <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                 <label class="flex items-center">
@@ -15,7 +15,7 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <a href="{{ route('reservations.index') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Back to List</a>
+                <a href="{{ route('reservations.index') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Terug naar Overzicht</a>
             </div>
         </div>
     </x-slot>
@@ -29,12 +29,12 @@
                         
                         <!-- Court Selection -->
                         <div class="mb-4">
-                            <label for="courtId" class="block text-sm font-medium text-gray-700">Select Court</label>
+                            <label for="courtId" class="block text-sm font-medium text-gray-700">Selecteer Baan</label>
                             <select name="courtId" id="courtId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <option value="">Select a court</option>
+                                <option value="">Selecteer een baan</option>
                                 @foreach ($courts as $court)
                                     <option value="{{ $court->id }}" {{ old('courtId') == $court->id ? 'selected' : '' }}>
-                                        {{ $court->number }}
+                                        Baan {{ $court->number }}
                                     </option>
                                 @endforeach
                             </select>
