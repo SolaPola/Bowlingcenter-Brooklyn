@@ -2,11 +2,11 @@
     <x-slot name="header">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <h2 class="font-semibold text-xl text-white-900 leading-tight">
-                {{ __('Reservations') }}
+                {{ __('Reserveringen') }}
             </h2>
             <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                 <label class="flex items-center">
-                    <span class="mr-2 text-white-900 toon">Show Data</span>
+                    <span class="mr-2 text-white-900 toon">Toon Gegevens</span>
                     <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
                         <input type="checkbox" id="dataToggle"
                             class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
@@ -15,7 +15,7 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <a href="{{ route('reservations.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">New Reservation</a>
+                <a href="{{ route('reservations.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Nieuwe Reservering</a>
             </div>
         </div>
     </x-slot>
@@ -36,12 +36,12 @@
                             <table class="min-w-full table-auto">
                                 <thead>
                                     <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">
-                                        <th class="py-4 px-6 text-left">Date</th>
-                                        <th class="py-4 px-6 text-left">Time</th>
-                                        <th class="py-4 px-6 text-left">Court</th>
-                                        <th class="py-4 px-6 text-left">Duration</th>
+                                        <th class="py-4 px-6 text-left">Datum</th>
+                                        <th class="py-4 px-6 text-left">Tijd</th>
+                                        <th class="py-4 px-6 text-left">Baan</th>
+                                        <th class="py-4 px-6 text-left">Duur</th>
                                         <th class="py-4 px-6 text-center">Status</th>
-                                        <th class="py-4 px-6 text-center">Actions</th>
+                                        <th class="py-4 px-6 text-center">Acties</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-800 text-sm font-light">
@@ -50,20 +50,20 @@
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->date }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->timeslot->startTime }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->court->name }}</td>
-                                            <td class="py-3 px-6 text-left">{{ $reservation->minutes }} minutes</td>
+                                            <td class="py-3 px-6 text-left">{{ $reservation->minutes }} minuten</td>
                                             <td class="py-3 px-6 text-center">
-                                                @if($reservation->status === 'confirmed')
-                                                    <span class="bg-green-500 text-white py-1 px-3 rounded-full text-xs font-medium">Confirmed</span>
-                                                @elseif($reservation->status === 'pending')
-                                                    <span class="bg-yellow-400 text-white py-1 px-3 rounded-full text-xs font-medium">Pending</span>
+                                                @if($reservation->status === 'Betaald')
+                                                    <span class="bg-green-500 text-white py-1 px-3 rounded-full text-xs font-medium">Bevestigd</span>
+                                                @elseif($reservation->status === 'In behandeling')
+                                                    <span class="bg-yellow-400 text-white py-1 px-3 rounded-full text-xs font-medium">In behandeling</span>
                                                 @else
-                                                    <span class="bg-red-500 text-white py-1 px-3 rounded-full text-xs font-medium">Cancelled</span>
+                                                    <span class="bg-red-500 text-white py-1 px-3 rounded-full text-xs font-medium">Geannuleerd</span>
                                                 @endif
                                             </td>
                                             <td class="py-3 px-6 text-center space-x-4">
                                                 <a href="{{ route('reservations.show', $reservation->id) }}" class="text-blue-600 hover:text-blue-800 transition duration-300">ⓘ</a>
                                                 <a href="{{ route('reservations.edit', $reservation->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
-                                                <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}" class="inline-block" onsubmit="return confirm('Are you sure you want to cancel this reservation?');">
+                                                <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}" class="inline-block" onsubmit="return confirm('Weet u zeker dat u deze reservering wilt annuleren?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-500 hover:text-red-700 transition duration-300">🗑️</button>
@@ -75,7 +75,7 @@
                             </table>
                         @else
                             <div class="p-4">
-                                <p class="bg-red-500 text-white p-4 rounded mb-4">No reservations found.</p>
+                                <p class="bg-red-500 text-white p-4 rounded mb-4">Geen reserveringen gevonden.</p>
                             </div>
                         @endif
                     </div>
@@ -85,7 +85,7 @@
     </div>
 
     <div id="errorContainer" class="py-12 hidden ml-64">
-        <p class="text-red-500">No reservations found. Please try again later.</p>
+        <p class="text-red-500">Geen reserveringen gevonden. Probeer het later opnieuw.</p>
     </div>
 </x-app-layout>
 
