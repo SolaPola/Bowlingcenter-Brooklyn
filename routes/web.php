@@ -15,6 +15,13 @@ Route::get('/dashboard', function () {
 
  // Use the resource route which defines all CRUD routes
  Route::resource('reservations', ReservationController::class);
+ Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
+ Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
+    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+    Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
+    Route::get('/reservations/{id}/edit', [ReservationController::class, 'edit'])->name('reservations.edit');
+    Route::put('/reservations/{id}', [ReservationController::class, 'update'])->name('reservations.update');
+    Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
 
 
 // Reservation routes with auth middleware

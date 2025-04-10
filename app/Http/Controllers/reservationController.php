@@ -108,7 +108,7 @@ class ReservationController extends Controller
             Log::error('Error storing reservation: ' . $e->getMessage());
             return redirect()->back()
                            ->withInput()
-                           ->with('error', 'Er is een fout opgetreden bij het opslaan van de reservering.');
+                           ->with('error', 'Er is een fout opgetreden bij het opslaan van de reservering: ' . $e->getMessage());
         }
     }
 
@@ -208,7 +208,7 @@ class ReservationController extends Controller
             Log::error('Error updating reservation: ' . $e->getMessage());
             return redirect()->back()
                            ->withInput()
-                           ->with('error', 'Er is een fout opgetreden bij het bijwerken van de reservering.');
+                           ->with('error', 'Er is een fout opgetreden bij het bijwerken van de reservering: ' . $e->getMessage());
         }
     }
 
@@ -221,7 +221,7 @@ class ReservationController extends Controller
             $result = DB::select('CALL sp_cancel_reservation(?)', [$id]);
             
             Log::info('Reservation canceled with ID: ' . $id);
-            return redirect()->route('reservations.index')
+            return redirect()->route('reservation.index')
                             ->with('success', 'De reservering is succesvol geannuleerd.');
         } catch (Exception $e) {
             Log::error('Error canceling reservation: ' . $e->getMessage());

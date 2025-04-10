@@ -71,21 +71,21 @@
 
                         <!-- Duur in Minuten -->
                         <div class="mb-4">
-                            <label for="minutes" class="block text-sm font-medium text-gray-700">Duration (minutes)</label>
+                            <label for="minutes" class="block text-sm font-medium text-gray-700">Duur (minuten)</label>
                             <select name="minutes" id="minutes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                <option value="30" {{ old('minutes') == 30 ? 'selected' : '' }}>30 minutes</option>
-                                <option value="60" {{ old('minutes', 60) == 60 ? 'selected' : '' }}>1 hour</option>
-                                <option value="90" {{ old('minutes') == 90 ? 'selected' : '' }}>1.5 hours</option>
-                                <option value="120" {{ old('minutes') == 120 ? 'selected' : '' }}>2 hours</option>
+                                <option value="30" {{ old('minutes') == 30 ? 'selected' : '' }}>30 minuten</option>
+                                <option value="60" {{ old('minutes', 60) == 60 ? 'selected' : '' }}>1 uur</option>
+                                <option value="90" {{ old('minutes') == 90 ? 'selected' : '' }}>1,5 uur</option>
+                                <option value="120" {{ old('minutes') == 120 ? 'selected' : '' }}>2 uur</option>
                             </select>
                             @error('minutes')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <!-- Number of People -->
+                        <!-- Aantal Personen -->
                         <div class="mb-4">
-                            <label for="numberOfPeople" class="block text-sm font-medium text-gray-700">Number of People</label>
+                            <label for="numberOfPeople" class="block text-sm font-medium text-gray-700">Aantal Personen</label>
                             <input type="number" name="numberOfPeople" id="numberOfPeople" value="{{ old('numberOfPeople', 1) }}" min="1" max="8"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                             @error('numberOfPeople')
@@ -93,9 +93,9 @@
                             @enderror
                         </div>
 
-                        <!-- Notes -->
+                        <!-- Extra Opmerkingen -->
                         <div class="mb-4">
-                            <label for="note" class="block text-sm font-medium text-gray-700">Additional Notes</label>
+                            <label for="note" class="block text-sm font-medium text-gray-700">Extra Opmerkingen</label>
                             <textarea name="note" id="note" rows="3" 
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">{{ old('note') }}</textarea>
                             @error('note')
@@ -106,10 +106,10 @@
                         <!-- Submit Button -->
                         <div class="flex items-center justify-between mt-6">
                             <a href="{{ route('reservations.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                Cancel
+                                Annuleren
                             </a>
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                                Create Reservation
+                                Reservering Aanmaken
                             </button>
                         </div>
                     </form>
