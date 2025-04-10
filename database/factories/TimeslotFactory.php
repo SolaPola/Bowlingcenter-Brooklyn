@@ -3,6 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Str;
+use App\Models\Timeslot;
 
 class TimeslotFactory extends Factory
 {

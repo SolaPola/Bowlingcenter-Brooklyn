@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Reservation;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class OrderFactory extends Factory

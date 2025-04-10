@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Person;
 use App\Models\Score;
+use App\Models\Customer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CustomerFactory extends Factory
