@@ -34,7 +34,7 @@
                                 <option value="">Select a court</option>
                                 @foreach ($courts as $court)
                                     <option value="{{ $court->id }}" {{ old('courtId') == $court->id ? 'selected' : '' }}>
-                                        {{ $court->name }} - {{ $court->description }}
+                                        {{ $court->number }}
                                     </option>
                                 @endforeach
                             </select>
