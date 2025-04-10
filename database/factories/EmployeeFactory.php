@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Person;
+use App\Models\Employee;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PersonFactory extends Factory
+class EmployeeFactory extends Factory
 {
     public function definition(): array
     {
         return [
-            'firstName' => fake()->firstName(),
-            'infix' => fake()->optional()->word(),
-            'lastName' => fake()->lastName(),
+            'personId' => Person::factory(),
+            'function' => fake()->jobTitle(),
+            'department' => fake()->company(),
             'isActive' => true,
             'note' => fake()->optional()->sentence(),
             'createdAt' => now(),

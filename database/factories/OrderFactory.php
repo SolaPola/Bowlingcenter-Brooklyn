@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Models\Reservation;
+use App\Models\Order;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\Person;
 
-class PersonFactory extends Factory
+class OrderFactory extends Factory
 {
     public function definition(): array
     {
         return [
-            'firstName' => fake()->firstName(),
-            'infix' => fake()->optional()->word(),
-            'lastName' => fake()->lastName(),
+            'reservationId' => Reservation::factory(),
+            'orderNumber' => fake()->unique()->randomNumber(5),
+            'orderDate' => fake()->date(),
             'isActive' => true,
             'note' => fake()->optional()->sentence(),
             'createdAt' => now(),

@@ -11,136 +11,136 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('persoon', function (Blueprint $table) {
+        Schema::create('person', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->string('voornaam', 100);
-            $table->string('tussenvoegsel', 50)->nullable();
-            $table->string('achternaam', 100);
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->string('firstName', 100);
+            $table->string('infix', 50)->nullable();
+            $table->string('lastName', 100);
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
         Schema::create('contact', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
             $table->string('email', 255)->unique();
-            $table->string('telefoonnummer', 15)->nullable();
-            $table->string('adres', 255)->nullable();
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->string('phoneNumber', 15)->nullable();
+            $table->string('address', 255)->nullable();
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('gebruiker', function (Blueprint $table) {
+        Schema::create('user', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('persoonId')->constrained('persoon');
+            $table->foreignId('personId')->constrained('person');
             $table->foreignId('contactId')->constrained('contact');
-            $table->string('gebruikersnaam', 100)->unique();
-            $table->string('wachtwoord', 255);
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->string('username', 100)->unique();
+            $table->string('password', 255);
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('rol', function (Blueprint $table) {
+        Schema::create('role', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('gebruikerId')->constrained('gebruiker');
-            $table->string('naam', 50);
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->foreignId('userId')->constrained('user');
+            $table->string('name', 50);
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('medewerker', function (Blueprint $table) {
+        Schema::create('employee', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('persoonId')->constrained('persoon');
-            $table->string('functie', 100)->nullable();
-            $table->string('afdeling', 100)->nullable();
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->foreignId('personId')->constrained('person');
+            $table->string('function', 100)->nullable();
+            $table->string('department', 100)->nullable();
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
         Schema::create('score', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->integer('aantal', false, true)->length(20);
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->integer('amount', false, true)->length(20);
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('klant', function (Blueprint $table) {
+        Schema::create('customer', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('persoonId')->constrained('persoon');
+            $table->foreignId('personId')->constrained('person');
             $table->foreignId('scoreId')->constrained('score');
-            $table->string('lidmaatschapType', 50)->nullable();
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->string('membershipType', 50)->nullable();
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('tijdstip', function (Blueprint $table) {
+        Schema::create('timeslot', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->time('starttijd');
-            $table->time('eindtijd');
-            $table->string('dag', 20);
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->time('startTime');
+            $table->time('endTime');
+            $table->string('day', 20);
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('baan', function (Blueprint $table) {
+        Schema::create('court', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->integer('nummer')->unique();
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->integer('number')->unique();
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('reservering', function (Blueprint $table) {
+        Schema::create('reservation', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('klantId')->constrained('klant');
-            $table->foreignId('tijdstipId')->constrained('tijdstip');
-            $table->foreignId('baanId')->constrained('baan');
-            $table->date('datum');
-            $table->integer('minuten');
+            $table->foreignId('customerId')->constrained('customer');
+            $table->foreignId('timeslotId')->constrained('timeslot');
+            $table->foreignId('courtId')->constrained('court');
+            $table->date('date');
+            $table->integer('minutes');
             $table->string('status', 50);
-            $table->integer('aantalPersonen')->nullable();
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->integer('numberOfPeople')->nullable();
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
 
-        Schema::create('bestelling', function (Blueprint $table) {
+        Schema::create('order', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('reserveringId')->constrained('reservering');
-            $table->integer('bestellingsnummer');
-            $table->date('bestellingsdatum');
-            $table->boolean('isActief')->default(true);
-            $table->string('opmerking', 255)->nullable();
-            $table->dateTime('datumAangemaakt', 6);
-            $table->dateTime('datumGewijzigd', 6);
+            $table->foreignId('reservationId')->constrained('reservation');
+            $table->integer('orderNumber');
+            $table->date('orderDate');
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
         });
     }
 
@@ -149,16 +149,16 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bestelling');
-        Schema::dropIfExists('reservering');
-        Schema::dropIfExists('baan');
-        Schema::dropIfExists('tijdstip');
-        Schema::dropIfExists('klant');
+        Schema::dropIfExists('order');
+        Schema::dropIfExists('reservation');
+        Schema::dropIfExists('court');
+        Schema::dropIfExists('timeslot');
+        Schema::dropIfExists('customer');
         Schema::dropIfExists('score');
-        Schema::dropIfExists('medewerker');
-        Schema::dropIfExists('rol');
-        Schema::dropIfExists('gebruiker');
+        Schema::dropIfExists('employee');
+        Schema::dropIfExists('role');
+        Schema::dropIfExists('user');
         Schema::dropIfExists('contact');
-        Schema::dropIfExists('persoon');
+        Schema::dropIfExists('person');
     }
 };
