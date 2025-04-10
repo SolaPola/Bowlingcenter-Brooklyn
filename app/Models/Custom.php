@@ -3,9 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Person;
+use App\Models\Score;
+use App\Models\Reservation;
 
 class Customer extends Model
 {
+    use HasFactory;
+    
     protected $table = 'customer';
 
     protected $fillable = [
