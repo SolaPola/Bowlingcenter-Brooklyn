@@ -9,7 +9,13 @@ class Person extends Model
     protected $table = 'person';
 
     protected $fillable = [
-        'firstName', 'infix', 'lastName', 'isActive', 'note', 'createdAt', 'updatedAt'
+        'firstName', 
+        'infix', 
+        'lastName', 
+        'isActive', 
+        'note', 
+        'createdAt', 
+        'updatedAt'
     ];
 
     public $timestamps = false;
