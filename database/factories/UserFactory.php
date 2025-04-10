@@ -30,14 +30,15 @@ class UserFactory extends Factory
         $contact = Contact::factory()->create();
 
         return [
-            'personId' => $person->id,
-            'contactId' => $contact->id,
-            'username' => fake()->unique()->userName(),
+            // 'personId' => $person->id,
+            // 'contactId' => $contact->id,
+            'email' => fake()->email(),
+            'name' => fake()->unique()->userName(),
             'password' => Hash::make('password'),
-            'isActive' => true,
-            'note' => fake()->sentence(),
-            'createdAt' => now(),
-            'updatedAt' => now(),
+            // 'isActive' => true,
+            // 'note' => fake()->sentence(),
+            'created_At' => now(),
+            'updated_At' => now(),
         ];
     }
 }

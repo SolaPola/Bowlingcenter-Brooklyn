@@ -67,8 +67,8 @@
                     @empty
                         <tr>
                             <td colspan="10"
-                                class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700 text-center">
-                                Order available
+                                class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700 text-center text-red-500">
+                                No Order available
                             </td>
                         </tr>
                     @endforelse
