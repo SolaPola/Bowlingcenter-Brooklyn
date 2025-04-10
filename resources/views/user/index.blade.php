@@ -2,7 +2,7 @@
 
     {{-- title on the top of the screen --}}
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-gray-900 leading-tight">
             Account overzicht
         </h2>
     </x-slot>
@@ -17,7 +17,7 @@
     @endif
 
     <div class="overflow-x-auto">
-        <table class="w-3/4 bg-white dark:bg-gray-800 m-auto mt-5 mb-5">
+        <table class="w-3/4 bg-white dark:bg-gray-800 m-auto mt-5 mb-5 text-white">
             <thead>
                 <tr>
                     <th
@@ -28,7 +28,7 @@
                         Rol</th>
                     <th
                         class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                        Aangemaakt</th>
+                        geborte datum</th>
                     <th
                         class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
                         Wijzigen</th>
@@ -50,10 +50,9 @@
                 <tr class="bg-white dark:bg-gray-800">
                     <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700  border-r">{{ $user->Username }}
                     </td>
-                    <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700  border-r">{{ $user->RoleName }}
+                    <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700  border-r">{{ $user->role }}
                     </td>
-                    <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700  border-r">{{ $user->created_at
-                        }}</td>
+                    <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700  border-r">{{ $user->birth_date  }}</td>
                     <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-white border-r"><a href=""
                             class="bg-green-700 p-1 rounded">Wijzigen</a></td>
                     <td class="px-4 py-2 border-b border-gray-300 dark:border-gray-700 text-white"><a href=""

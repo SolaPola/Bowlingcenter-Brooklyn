@@ -35,7 +35,8 @@ class DatabaseSeeder extends Seeder
         $testPerson = $people->first();
         $testContact = $contacts->first();
         
-        $testUser = User::create([
+        
+        $user = User::create([
             'personId' => $testPerson->id,
             'contactId' => $testContact->id,
             'username' => 'testuser',
