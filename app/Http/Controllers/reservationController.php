@@ -7,17 +7,24 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Reservation;
 use App\Models\Court;
 use App\Models\Timeslot;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Exception;
 
 class ReservationController extends Controller
 {
-
     /**
      * Display a listing of the reservations.
      */
     public function index()
     {
-        $reservations = Reservation::with(['customer', 'court', 'timeslot'])->get();
-        return view('reservation.index', compact('reservations'));
+        try {
+            $reservations = Reservation::with(['customer', 'court', 'timeslot'])->get();
+            return view('reservation.index', compact('reservations'));
+        } catch (Exception $e) {
+            Log::error('Error in reservation index: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Er is een fout opgetreden bij het ophalen van de reserveringen.');
+        }
     }
 
     /**
@@ -25,10 +32,16 @@ class ReservationController extends Controller
      */
     public function create()
     {
-        $courts = Court::where('isActive', true)->get();
-        $timeslots = Timeslot::where('isActive', true)->get();
-        
-        return view('reservation.create', compact('courts', 'timeslots'));
+        try {
+            $courts = Court::where('isActive', true)->get();
+            $timeslots = Timeslot::where('isActive', true)->get();
+            
+            return view('reservation.create', compact('courts', 'timeslots'));
+        } catch (Exception $e) {
+            Log::error('Error in create form: ' . $e->getMessage());
+            return redirect()->route('reservations.index')
+                           ->with('error', 'Er is een fout opgetreden bij het laden van het formulier.');
+        }
     }
 
     /**
@@ -36,31 +49,44 @@ class ReservationController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'courtId' => 'required|exists:court,id',
-            'timeslotId' => 'required|exists:timeslot,id',
-            'date' => 'required|date|after_or_equal:today',
-            'numberOfPeople' => 'required|integer|min:1',
-            'minutes' => 'required|integer|min:30',
-            'note' => 'nullable|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'courtId' => 'required|exists:court,id',
+                'timeslotId' => 'required|exists:timeslot,id',
+                'date' => 'required|date|after_or_equal:today',
+                'numberOfPeople' => 'required|integer|min:1',
+                'minutes' => 'required|integer|min:30',
+                'note' => 'nullable|string|max:255',
+            ]);
 
-        $reservation = new Reservation();
-        $reservation->customerId = Auth::id();
-        $reservation->courtId = $request->courtId;
-        $reservation->timeslotId = $request->timeslotId;
-        $reservation->date = $request->date;
-        $reservation->numberOfPeople = $request->numberOfPeople;
-        $reservation->minutes = $request->minutes;
-        $reservation->note = $request->note;
-        $reservation->status = 'pending';
-        $reservation->isActive = true;
-        $reservation->createdAt = now();
-        $reservation->updatedAt = now();
-        $reservation->save();
+            DB::beginTransaction();
 
-        return redirect()->route('reservations.show', $reservation->id)
-                        ->with('success', 'Reservation created successfully.');
+            $reservation = new Reservation();
+            $reservation->customerId = Auth::id();
+            $reservation->courtId = $validated['courtId'];
+            $reservation->timeslotId = $validated['timeslotId'];
+            $reservation->date = $validated['date'];
+            $reservation->numberOfPeople = $validated['numberOfPeople'];
+            $reservation->minutes = $validated['minutes'];
+            $reservation->note = $validated['note'];
+            $reservation->status = 'pending';
+            $reservation->isActive = true;
+            $reservation->createdAt = now();
+            $reservation->updatedAt = now();
+            $reservation->save();
+
+            DB::commit();
+            
+            Log::info('New reservation created with ID: ' . $reservation->id);
+            return redirect()->route('reservations.show', $reservation->id)
+                            ->with('success', 'Reservation created successfully.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error storing reservation: ' . $e->getMessage());
+            return redirect()->back()
+                           ->withInput()
+                           ->with('error', 'Er is een fout opgetreden bij het opslaan van de reservering.');
+        }
     }
 
     /**
@@ -68,8 +94,14 @@ class ReservationController extends Controller
      */
     public function show($id)
     {
-        $reservation = Reservation::with(['customer', 'court', 'timeslot', 'orders'])->findOrFail($id);
-        return view('reservation.show', compact('reservation'));
+        try {
+            $reservation = Reservation::with(['customer', 'court', 'timeslot', 'orders'])->findOrFail($id);
+            return view('reservation.show', compact('reservation'));
+        } catch (Exception $e) {
+            Log::error('Error showing reservation details: ' . $e->getMessage());
+            return redirect()->route('reservations.index')
+                           ->with('error', 'Er is een fout opgetreden bij het tonen van de reservering.');
+        }
     }
 
     /**
@@ -77,11 +109,17 @@ class ReservationController extends Controller
      */
     public function edit($id)
     {
-        $reservation = Reservation::findOrFail($id);
-        $courts = Court::where('isActive', true)->get();
-        $timeslots = Timeslot::where('isActive', true)->get();
-        
-        return view('reservation.edit', compact('reservation', 'courts', 'timeslots'));
+        try {
+            $reservation = Reservation::findOrFail($id);
+            $courts = Court::where('isActive', true)->get();
+            $timeslots = Timeslot::where('isActive', true)->get();
+            
+            return view('reservation.edit', compact('reservation', 'courts', 'timeslots'));
+        } catch (Exception $e) {
+            Log::error('Error in edit form: ' . $e->getMessage());
+            return redirect()->route('reservations.index')
+                           ->with('error', 'Er is een fout opgetreden bij het laden van het formulier.');
+        }
     }
 
     /**
@@ -89,29 +127,42 @@ class ReservationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'courtId' => 'required|exists:court,id',
-            'timeslotId' => 'required|exists:timeslot,id',
-            'date' => 'required|date',
-            'numberOfPeople' => 'required|integer|min:1',
-            'minutes' => 'required|integer|min:30',
-            'status' => 'required|string',
-            'note' => 'nullable|string|max:255',
-        ]);
+        try {
+            $validated = $request->validate([
+                'courtId' => 'required|exists:court,id',
+                'timeslotId' => 'required|exists:timeslot,id',
+                'date' => 'required|date',
+                'numberOfPeople' => 'required|integer|min:1',
+                'minutes' => 'required|integer|min:30',
+                'status' => 'required|string',
+                'note' => 'nullable|string|max:255',
+            ]);
 
-        $reservation = Reservation::findOrFail($id);
-        $reservation->courtId = $request->courtId;
-        $reservation->timeslotId = $request->timeslotId;
-        $reservation->date = $request->date;
-        $reservation->numberOfPeople = $request->numberOfPeople;
-        $reservation->minutes = $request->minutes;
-        $reservation->status = $request->status;
-        $reservation->note = $request->note;
-        $reservation->updatedAt = now();
-        $reservation->save();
+            DB::beginTransaction();
 
-        return redirect()->route('reservations.show', $reservation->id)
-                        ->with('success', 'Reservation updated successfully.');
+            $reservation = Reservation::findOrFail($id);
+            $reservation->courtId = $validated['courtId'];
+            $reservation->timeslotId = $validated['timeslotId'];
+            $reservation->date = $validated['date'];
+            $reservation->numberOfPeople = $validated['numberOfPeople'];
+            $reservation->minutes = $validated['minutes'];
+            $reservation->status = $validated['status'];
+            $reservation->note = $validated['note'];
+            $reservation->updatedAt = now();
+            $reservation->save();
+
+            DB::commit();
+            
+            Log::info('Reservation updated with ID: ' . $id);
+            return redirect()->route('reservations.show', $reservation->id)
+                            ->with('success', 'Reservation updated successfully.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating reservation: ' . $e->getMessage());
+            return redirect()->back()
+                           ->withInput()
+                           ->with('error', 'Er is een fout opgetreden bij het bijwerken van de reservering.');
+        }
     }
 
     /**
@@ -119,12 +170,24 @@ class ReservationController extends Controller
      */
     public function destroy($id)
     {
-        $reservation = Reservation::findOrFail($id);
-        $reservation->isActive = false;
-        $reservation->updatedAt = now();
-        $reservation->save();
-
-        return redirect()->route('reservations.index')
-                        ->with('success', 'Reservation deactivated successfully.');
+        try {
+            DB::beginTransaction();
+            
+            $reservation = Reservation::findOrFail($id);
+            $reservation->isActive = false;
+            $reservation->updatedAt = now();
+            $reservation->save();
+            
+            DB::commit();
+            
+            Log::info('Reservation deactivated with ID: ' . $id);
+            return redirect()->route('reservations.index')
+                            ->with('success', 'Reservation deactivated successfully.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error deactivating reservation: ' . $e->getMessage());
+            return redirect()->back()
+                           ->with('error', 'Er is een fout opgetreden bij het deactiveren van de reservering.');
+        }
     }
 }
