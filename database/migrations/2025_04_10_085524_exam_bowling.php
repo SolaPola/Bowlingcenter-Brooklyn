@@ -137,6 +137,7 @@ return new class extends Migration
             $table->foreignId('reservationId')->constrained('reservation');
             $table->integer('orderNumber');
             $table->date('orderDate');
+            $table->string('packageType',);
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);

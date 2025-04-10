@@ -162,6 +162,7 @@ class DatabaseSeeder extends Seeder
         foreach ($allReservations as $reservation) {
             Order::factory()->create([
                 'reservationId' => $reservation->id,
+
             ]);
         }
         
@@ -188,6 +189,7 @@ class DatabaseSeeder extends Seeder
                     
                     Order::factory()->create([
                         'reservationId' => $newReservation->id,
+                        'packageType' => fake()->randomElement(['snackpakket basis', 'snackpakket Luxe', 'snackpakket Luxe', 'Vrijgezellenfeest ']),
                     ]);
                     
                     $usedCombinations[$combinationKey] = true;
