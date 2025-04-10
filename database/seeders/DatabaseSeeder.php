@@ -189,7 +189,7 @@ class DatabaseSeeder extends Seeder
                     
                     Order::factory()->create([
                         'reservationId' => $newReservation->id,
-                        'packageType' => fake()->randomElement(['snackpakket basis', 'snackpakket Luxe', 'snackpakket Luxe', 'Vrijgezellenfeest ']),
+                        'packageType' => fake()->randomElement(['snackpakket basis', 'snackpakket Luxe', 'kinderpartij', 'Vrijgezellenfeest ']),
                     ]);
                     
                     $usedCombinations[$combinationKey] = true;
