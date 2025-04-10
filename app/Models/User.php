@@ -10,7 +10,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'user'; // Specify the custom table name
+    protected $table = 'users'; // Specify the custom table name
     
     /**
      * The attributes that are mass assignable.

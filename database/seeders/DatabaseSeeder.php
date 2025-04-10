@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Person;
@@ -18,7 +17,6 @@ use App\Models\Order;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -28,46 +26,45 @@ class DatabaseSeeder extends Seeder
     {
         // Seed person and contact records first
         $people = Person::factory(20)->create();
-        
+
         // Create contacts
         $contacts = Contact::factory(20)->create();
-        
+
         // Create test user manually with existing person and contact
         $testPerson = $people->first();
         $testContact = $contacts->first();
-        
-        
-        $user = User::create([
-            'personId' => $testPerson->id,
-            'contactId' => $testContact->id,
-            'username' => 'testuser',
+
+        $testUser = User::create([
+            // 'personId' => $testPerson->id,
+            // 'contactId' => $testContact->id,
+            'email' => 'test@example.com',
+            'name' => 'testuser',
             'password' => Hash::make('password'),
-            'isActive' => true,
-            'note' => 'Test user account',
-            'createdAt' => now(),
-            'updatedAt' => now(),
+            // 'isActive' => true,
+            // 'note' => 'Test user account',
+            'created_At' => now(),
+            'updated_At' => now(),
         ]);
-        
-        
+
         // Create other users with UserFactory
-        $user = User::factory(9)->create();
+        $users = User::factory(9)->create();
         $allUsers = User::all();
-        
+
         // Seed roles for users
         foreach ($allUsers as $user) {
             Role::factory()->create([
                 'userId' => $user->id,
             ]);
         }
-        
+
         // Seed contacts for some of the people
         foreach ($people->random(15) as $person) {
             Contact::factory()->create();
         }
-        
+
         // Seed scores
         $scores = Score::factory(10)->create();
-        
+
         // Seed customers
         foreach ($people->random(10) as $person) {
             Customer::factory()->create([
@@ -75,43 +72,43 @@ class DatabaseSeeder extends Seeder
                 'scoreId' => $scores->random()->id,
             ]);
         }
-        
+
         // Seed employees
         foreach ($people->random(5) as $person) {
             Employee::factory()->create([
                 'personId' => $person->id,
             ]);
         }
-        
+
         // Seed courts
         $courts = Court::factory(8)->create();
-        
+
         // Seed timeslots
         $timeslots = Timeslot::factory(10)->create();
-        
+
         // Get all customers for reservations
         $customers = Customer::all();
-        
+
         // Seed reservations
         $reservations = [];
-        
+
         // Create an array to track used combinations
         $usedCombinations = [];
-        
+
         // Create a reservation for each customer with unique court/timeslot/date combinations
         foreach ($customers as $customer) {
             // Keep trying until we get a unique combination
             $uniqueCombinationFound = false;
             $maxAttempts = 50; // Limit attempts to prevent infinite loop
             $attempt = 0;
-            
+
             while (!$uniqueCombinationFound && $attempt < $maxAttempts) {
                 $courtId = $courts->random()->id;
                 $timeslotId = $timeslots->random()->id;
                 $date = fake()->dateTimeBetween('-1 month', '+2 months')->format('Y-m-d');
-                
+
                 $combinationKey = "{$courtId}_{$timeslotId}_{$date}";
-                
+
                 // If combination is unique, create reservation
                 if (!isset($usedCombinations[$combinationKey])) {
                     $reservation = Reservation::factory()->create([
@@ -120,84 +117,86 @@ class DatabaseSeeder extends Seeder
                         'timeslotId' => $timeslotId,
                         'date' => $date,
                     ]);
-                    
+
                     $reservations[] = $reservation;
                     $usedCombinations[$combinationKey] = true;
                     $uniqueCombinationFound = true;
                 }
-                
+
                 $attempt++;
             }
         }
-        
+
         // Create additional reservations with unique combinations
         $additionalReservations = [];
         for ($i = 0; $i < 10; $i++) {
             $uniqueCombinationFound = false;
             $maxAttempts = 50;
             $attempt = 0;
-            
+
             while (!$uniqueCombinationFound && $attempt < $maxAttempts) {
                 $courtId = $courts->random()->id;
                 $timeslotId = $timeslots->random()->id;
                 $date = fake()->dateTimeBetween('-1 month', '+2 months')->format('Y-m-d');
-                
+
                 $combinationKey = "{$courtId}_{$timeslotId}_{$date}";
-                
+
                 if (!isset($usedCombinations[$combinationKey])) {
                     $reservation = Reservation::factory()->create([
                         'courtId' => $courtId,
                         'timeslotId' => $timeslotId,
                         'date' => $date,
                     ]);
-                    
+
                     $additionalReservations[] = $reservation;
                     $usedCombinations[$combinationKey] = true;
                     $uniqueCombinationFound = true;
                 }
-                
+
                 $attempt++;
             }
         }
-        
+
         $allReservations = array_merge($reservations, $additionalReservations);
-        
+
         // Seed orders for each reservation
         foreach ($allReservations as $reservation) {
             Order::factory()->create([
                 'reservationId' => $reservation->id,
+
             ]);
         }
-        
+
         // Create additional orders with new reservations
         for ($i = 0; $i < 5; $i++) {
             // Create a new reservation with unique combination
             $uniqueCombinationFound = false;
             $maxAttempts = 50;
             $attempt = 0;
-            
+
             while (!$uniqueCombinationFound && $attempt < $maxAttempts) {
                 $courtId = $courts->random()->id;
                 $timeslotId = $timeslots->random()->id;
                 $date = fake()->dateTimeBetween('-1 month', '+2 months')->format('Y-m-d');
-                
+
                 $combinationKey = "{$courtId}_{$timeslotId}_{$date}";
-                
+
                 if (!isset($usedCombinations[$combinationKey])) {
                     $newReservation = Reservation::factory()->create([
                         'courtId' => $courtId,
                         'timeslotId' => $timeslotId,
                         'date' => $date,
                     ]);
-                    
+
                     Order::factory()->create([
                         'reservationId' => $newReservation->id,
+                        'packageType' => fake()->randomElement(['snackpakket basis', 'snackpakket Luxe', 'kinderpartij', 'Vrijgezellenfeest ']),
                     ]);
-                    
+
                     $usedCombinations[$combinationKey] = true;
                     $uniqueCombinationFound = true;
                 }
-                
+
                 $attempt++;
             }
         }

@@ -89,7 +89,7 @@ class UserController extends Controller
         try {
             DB::beginTransaction();
             //creates the user in the database
-            $user = User::create([
+            $users = User::create([
                 'name' => $request->Username,
                 'email' => $request->Email,
                 'password' => $password,
@@ -114,9 +114,9 @@ class UserController extends Controller
     public function edit($id)
     {
         //reads the user from the database
-        $user = DB::table('users')->where('id', $id)->first();
+        $users = DB::table('users')->where('id', $id)->first();
         //redirects the user to the edit page with the user data
-        return view('users.edit', ['user' => $user]);
+        return view('users.edit', ['user' => $users]);
     }
 
     //updates the user in the database
@@ -186,9 +186,9 @@ class UserController extends Controller
     public function show($id)
     {
         //reads the user from the database
-        $user = DB::table('users')->where('id', $id)->first();
+        $users = DB::table('users')->where('id', $id)->first();
         //redirects the user to the show page with the user data
-        return view('users.show', ['user' => $user]);
+        return view('users.show', ['user' => $users]);
     }
     
 
