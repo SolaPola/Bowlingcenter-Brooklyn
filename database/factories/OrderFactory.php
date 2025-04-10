@@ -14,6 +14,7 @@ class OrderFactory extends Factory
             'reservationId' => Reservation::factory(),
             'orderNumber' => fake()->unique()->randomNumber(5),
             'orderDate' => fake()->date(),
+            'packageType' => $this->faker->randomElement(['snackpakket basis', 'snackpakket Luxe', 'snackpakket Luxe', 'Vrijgezellenfeest ']),
             'isActive' => true,
             'note' => fake()->optional()->sentence(),
             'createdAt' => now(),
