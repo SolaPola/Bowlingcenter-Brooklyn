@@ -41,3 +41,5 @@ Route::prefix('score')->group(function () {
     Route::put('/{id}', [ScoreController::class, 'update'])->name('score.update'); // Voor het updaten van data
     Route::delete('/{id}', [ScoreController::class, 'destroy'])->name('score.destroy'); // Voor het verwijderen van data
 });
+
+Route::get('/scores', [ScoreController::class, 'index']);

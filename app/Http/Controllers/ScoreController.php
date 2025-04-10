@@ -3,14 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ScoreController extends Controller
 {
     // Toon de lijst van scores
     public function index()
     {
-        // Logica om scores op te halen
-        return view('score.index'); // Zorg dat de view bestaat in resources/views/score/index.blade.php
+        $scores = DB::table('scores')
+            ->join('person', 'scores.personId', '=', 'person.id')
+            ->join('customer', 'scores.id', '=', 'customer.scoreId')
+            ->select('scores.id', 'person.firstName', 'person.lastName', 'scores.amount', 'customer.membershipType')
+            ->get();
+
+        return view('score.index', compact('scores'));
     }
 
     // Toon het formulier om een nieuwe score aan te maken
@@ -22,9 +28,21 @@ class ScoreController extends Controller
     // Sla een nieuwe score op
     public function store(Request $request)
     {
-        // Validatie en opslaglogica
-        // Bijvoorbeeld: Score::create($request->all());
-        return redirect()->route('score.index')->with('success', 'Score succesvol toegevoegd!');
+        $request->validate([
+            'firstName' => 'required|string|max:100',
+            'lastName' => 'required|string|max:100',
+            'amount' => 'required|integer|min:0',
+            'membershipType' => 'required|string|max:50',
+        ]);
+
+        DB::statement('CALL InsertPersonScoreMembership(?, ?, ?, ?)', [
+            $request->firstName,
+            $request->lastName,
+            $request->amount,
+            $request->membershipType,
+        ]);
+
+        return redirect()->route('score.index')->with('success', 'Score successfully added!');
     }
 
     // Toon een specifieke score
