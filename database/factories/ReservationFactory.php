@@ -21,7 +21,6 @@ class ReservationFactory extends Factory
             'status' => fake()->randomElement(['In behandeling', 'Betaald', 'geannuleerd']),
             'numberOfPeople' => fake()->numberBetween(1, 6),
             'isActive' => true,
-            'note' => fake()->optional()->sentence(),
             'createdAt' => now(),
             'updatedAt' => now(),
         ];
