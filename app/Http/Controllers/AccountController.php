@@ -52,63 +52,81 @@ class AccountController extends Controller
 
     public function show($id)
     {
-        // Get account details using the specific stored procedure
-        $accounts = DB::select('CALL spGetAccountById(?)', [$id]);
-        
-        // Check if account exists
-        if (empty($accounts)) {
+        try {
+            // Get account details using the specific stored procedure
+            $accounts = DB::select('CALL spGetAccountById(?)', [$id]);
+            
+            // Check if account exists
+            if (empty($accounts)) {
+                return redirect()->route('accounts.index')
+                    ->with('error', 'Account not found');
+            }
+            
+            $account = $accounts[0]; // Get the first (and only) result
+            
+            return view('account.show', compact('account'));
+        } catch (\Exception $e) {
             return redirect()->route('accounts.index')
-                ->with('error', 'Account not found');
+                ->with('error', 'Error retrieving account: ' . $e->getMessage());
         }
-        
-        $account = $accounts[0]; // Get the first (and only) result
-        
-        return view('account.show', compact('account'));
     }
 
     // edit
     public function edit($id)
     {
-        // Get account details using the stored procedure
-        $accounts = DB::select('CALL spGetAccountById(?)', [$id]);
-        
-        // Check if account exists
-        if (empty($accounts)) {
+        try {
+            // Get account details using the stored procedure
+            $accounts = DB::select('CALL spGetAccountById(?)', [$id]);
+            
+            // Check if account exists
+            if (empty($accounts)) {
+                return redirect()->route('accounts.index')
+                    ->with('error', 'Account not found');
+            }
+            
+            $account = $accounts[0]; // Get the first (and only) result
+            
+            return view('account.edit', compact('account'));
+        } catch (\Exception $e) {
             return redirect()->route('accounts.index')
-                ->with('error', 'Account not found');
+                ->with('error', 'Error retrieving account for editing: ' . $e->getMessage());
         }
-        
-        $account = $accounts[0]; // Get the first (and only) result
-        
-        return view('account.edit', compact('account'));
     }
 
     // update
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'firstName' => 'required|string|max:255',
-            'infix' => 'nullable|string|max:255',
-            'lastName' => 'required|string|max:255',
-            'mobileNumber' => 'required|string|max:255',
-            'emailAddress' => 'required|email|max:255',
-        ]);
+        try {
+            $request->validate([
+                'firstName' => 'required|string|max:255',
+                'infix' => 'nullable|string|max:255',
+                'lastName' => 'required|string|max:255',
+                'mobileNumber' => 'required|string|max:255',
+                'emailAddress' => 'required|email|max:255',
+            ]);
 
-        // Set isAdult value (checkbox handling)
-        $isAdult = $request->has('isAdult') ? 1 : 0;
-        
-        // Call the stored procedure to update account information
-        DB::select('CALL spUpdateAccountInfo(?, ?, ?, ?, ?, ?, ?)', [
-            $id,
-            $request->firstName,
-            $request->infix,
-            $request->lastName,
-            $request->mobileNumber,
-            $request->emailAddress,
-            $isAdult
-        ]);
+            // Set isAdult value (checkbox handling)
+            $isAdult = $request->has('isAdult') ? 1 : 0;
+            
+            // Call the stored procedure to update account information
+            DB::select('CALL spUpdateAccountInfo(?, ?, ?, ?, ?, ?, ?)', [
+                $id,
+                $request->firstName,
+                $request->infix,
+                $request->lastName,
+                $request->mobileNumber,
+                $request->emailAddress,
+                $isAdult
+            ]);
 
-        return redirect()->route('accounts.index')
-            ->with('success', 'Account updated successfully');
+            return redirect()->route('accounts.index')
+                ->with('success', 'Account updated successfully');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error updating account: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 }
