@@ -248,8 +248,7 @@ return new class extends Migration
                 ,r.date
                 ,r.minutes
                 ,r.status
-                ,r.aantalvolwassen
-                ,r.aantalkinderen
+                ,r.numberOfPeople
                 ,r.isActive 
                 ,r.note
                 ,r.createdAt
@@ -257,6 +256,9 @@ return new class extends Migration
                 ,c.number as courtNumber
                 ,t.startTime 
                 ,t.endTime
+                ,p.firstName
+                ,p.infix
+                ,p.lastName
                 ,CONCAT_WS(" ", p.firstName, p.infix, p.lastName) as customerName
             FROM reservation r
 

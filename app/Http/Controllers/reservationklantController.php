@@ -22,7 +22,7 @@ class ReservationKlantController extends Controller
         try {
 
              // Haal de datum op uit de request
-            $date = $request->input('date'); // Standaard: vandaag
+            $date = $request->input('date');
             // Get all reservations from stored procedure
             $allReservations = DB::select('CALL sp_get_all_reservations()');
             // Filter reservations by date if provided

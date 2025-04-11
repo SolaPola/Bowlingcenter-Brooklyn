@@ -47,8 +47,7 @@
                                     <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">
                                         <th class="py-4 px-6 text-left">Naam</th>
                                         <th class="py-4 px-6 text-left">Datum</th>
-                                        <th class="py-4 px-6 text-left">StartTijd</th>
-                                        <th class="py-4 px-6 text-left">Eindtijd</th>
+                                        <th class="py-4 px-6 text-left">Tijd</th>
                                         <th class="py-4 px-6 text-left">Baan</th>
                                         <th class="py-4 px-6 text-left">Duur</th>
                                         <th class="py-4 px-6 text-center">Status</th>
@@ -61,7 +60,6 @@
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->customerName }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->date }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->startTime)) }}</td>
-                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->endTime)) }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->courtNumber }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->minutes }} minuten</td>
                                             <td class="py-3 px-6 text-center">
