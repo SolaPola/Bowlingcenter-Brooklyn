@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('firstName', 100);
             $table->string('infix', 50)->nullable();
             $table->string('lastName', 100);
+            $table->string('callname')->nullable();
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
@@ -101,6 +102,7 @@ return new class extends Migration
             $table->dateTime('createdAt', 6);
             $table->dateTime('updatedAt', 6);
         });
+
 
         Schema::create('reservation', function (Blueprint $table) {
             $table->engine = 'InnoDB';

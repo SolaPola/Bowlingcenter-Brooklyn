@@ -204,20 +204,82 @@ return new class extends Migration
             CREATE PROCEDURE `sp_get_reservations_by_date`(IN reservation_date DATE)
             BEGIN
                 SELECT 
-                    r.id, r.customerId, r.timeslotId, r.courtId, r.date, 
-                    r.minutes, r.status, r.numberOfPeople, r.isActive, 
-                    r.note, r.createdAt, r.updatedAt,
-                    c.number as courtNumber,
-                    t.startTime, t.endTime,
-                    CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) as customerName
+                    r.id
+                    ,r.customerId
+                    ,r.timeslotId
+                    ,r.courtId
+                    ,r.date
+                    ,r.minutes
+                    ,r.status
+                    ,r.numberOfPeople
+                    ,r.isActive 
+                    ,r.note
+                    ,r.createdAt
+                    ,r.updatedAt
+                    ,c.number as courtNumber
+                    ,t.startTime, t.endTime
+                    ,CONCAT_WS(" ", p.firstName, p.infix, p.lastName) as customerName
                 FROM reservation r
-                JOIN court c ON r.courtId = c.id
-                JOIN timeslot t ON r.timeslotId = t.id
-                JOIN customer cu ON r.customerId = cu.id
+
+                JOIN court c 
+                ON r.courtId = c.id
+
+                JOIN timeslot t 
+                ON r.timeslotId = t.id
+
+                JOIN customer cu 
+                ON r.customerId = cu.id
+
                 JOIN person p ON cu.personId = p.id
                 WHERE r.date = reservation_date AND r.isActive = 1
-                ORDER BY t.startTime, c.number;
+                ORDER BY r.date , t.startTime;
             END
+        ');
+
+        DB::unprepared('
+        DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date_filter`;
+        CREATE PROCEDURE `sp_get_reservations_by_date_filter`(IN reservation_date DATE)
+        BEGIN
+            SELECT 
+                r.id
+                ,r.customerId
+                ,r.timeslotId
+                ,r.courtId
+                ,r.date
+                ,r.minutes
+                ,r.status
+                ,r.numberOfPeople
+                ,r.isActive 
+                ,r.note
+                ,r.createdAt
+                ,r.updatedAt
+                ,c.number as courtNumber
+                ,t.startTime, t.endTime
+                ,CONCAT_WS(" ", p.firstName, p.infix, p.lastName) as customerName
+            FROM reservation r
+
+            JOIN court c 
+            ON r.courtId = c.id
+
+            JOIN timeslot t 
+            ON r.timeslotId = t.id
+
+            JOIN customer cu 
+            ON r.customerId = cu.id
+
+            JOIN person p ON cu.personId = p.id
+            WHERE 
+                -- Match the reservation date
+                r.date >= reservation_date 
+                -- Ensure the reservation date is today or in the future
+                AND r.date >= CURDATE() 
+                -- Only include active reservations
+                AND r.isActive = 1
+                -- Exclude canceled reservations
+                AND r.status != "canceled"
+
+            ORDER BY r.date asc;
+        END
         ');
     }
 
@@ -235,5 +297,6 @@ return new class extends Migration
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_cancel_reservation`');
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_check_court_availability`');
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date`');
+        DB::unprepared('DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date_filter`');
     }
 };

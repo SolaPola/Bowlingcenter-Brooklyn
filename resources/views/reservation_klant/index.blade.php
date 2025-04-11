@@ -15,7 +15,13 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <a href="{{ route('reservations.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Nieuwe Reservering</a>
+                <form action="{{route('reservation_klant.index.filter')}}" method="post" class="flex items-center">
+                        @csrf
+                        vanaf: <input type="date" name="date" id="date" class="border border-gray-300 p-2 m-1.5">
+                        <button class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">toon reserveringen</button>
+                    </form>
+                <a href="{{ route('reservation_klant.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Nieuwe Reservering</a>
+
             </div>
         </div>
     </x-slot>
@@ -61,9 +67,9 @@
                                                 @endif
                                             </td>
                                             <td class="py-3 px-6 text-center space-x-4">
-                                                <a href="{{ route('reservations.show', $reservation->id) }}" class="text-blue-600 hover:text-blue-800 transition duration-300">ⓘ</a>
-                                                <a href="{{ route('reservations.edit', $reservation->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
-                                                <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}" class="inline-block" onsubmit="return confirm('Weet u zeker dat u deze reservering wilt annuleren?');">
+                                                <a href="{{ route('reservation_klant.show', $reservation->id) }}" class="text-blue-600 hover:text-blue-800 transition duration-300">ⓘ</a>
+                                                <a href="{{ route('reservation_klant.edit', $reservation->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
+                                                <form method="POST" action="{{ route('reservation_klant.destroy', $reservation->id) }}" class="inline-block" onsubmit="return confirm('Weet u zeker dat u deze reservering wilt annuleren?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="text-red-500 hover:text-red-700 transition duration-300">🗑️</button>

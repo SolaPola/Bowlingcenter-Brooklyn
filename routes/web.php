@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ReservationklantController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,14 +19,25 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
  // Use the resource route which defines all CRUD routes
- Route::resource('reservations', ReservationController::class);
- Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
- Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
-    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
-    Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
-    Route::get('/reservations/{id}/edit', [ReservationController::class, 'edit'])->name('reservations.edit');
-    Route::put('/reservations/{id}', [ReservationController::class, 'update'])->name('reservations.update');
-    Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
+Route::resource('reservations', ReservationController::class);
+Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
+Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
+Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
+Route::get('/reservations/{id}/edit', [ReservationController::class, 'edit'])->name('reservations.edit');
+Route::put('/reservations/{id}', [ReservationController::class, 'update'])->name('reservations.update');
+Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
+
+
+Route::resource('/reservation_klant', ReservationKlantController::class);
+Route::get('/reservation_klant', [ReservationKlantController::class, 'index'])->name('reservation_klant.index');
+Route::post('/reservation_klant/filter', [ReservationKlantController::class, 'index'])->name('reservation_klant.index.filter');
+Route::get('/reservation_klant/create', [ReservationKlantController::class, 'create'])->name('reservation_klant.create');
+Route::post('/reservation_klant', [ReservationKlantController::class, 'store'])->name('reservation_klant.store');
+Route::get('/reservation_klant/{id}', [ReservationKlantController::class, 'show'])->name('reservation_klant.show');
+Route::get('/reservation_klant/{id}/edit', [ReservationKlantController::class, 'edit'])->name('reservation_klant.edit');
+Route::put('/reservation_klant/{id}', [ReservationKlantController::class, 'update'])->name('reservation_klant.update');
+Route::delete('/reservation_klant/{id}', [ReservationKlantController::class, 'destroy'])->name('reservation_klant.destroy');
 
 
 
