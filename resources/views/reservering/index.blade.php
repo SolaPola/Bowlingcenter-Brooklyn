@@ -9,6 +9,13 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
+                    <form method="GET" action="{{ route('reservering.index') }}" class="mb-4 flex items-center">
+                        <label for="datum" class="mr-2 text-sm font-medium text-gray-700">Datum:</label>
+                        <input type="date" id="datum" name="datum" value="{{ request('datum') }}" class="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 px-3 py-2 text-sm">
+                        <button type="submit" class="ml-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+                            Tonen
+                        </button>
+                    </form>
                     <table class="min-w-full table-auto">
                         <thead>
                             <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">

@@ -27,7 +27,9 @@ class CreateGetReserveringOverzichtSp extends Migration
                 INNER JOIN 
                     reservering r
                 ON 
-                    p.Id = r.PersoonId;
+                    p.Id = r.PersoonId
+                ORDER BY 
+                    r.Datum DESC;
             END
         ');
     }
