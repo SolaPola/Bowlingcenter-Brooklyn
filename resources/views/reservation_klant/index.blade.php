@@ -20,7 +20,7 @@
                     <div>
                         <label for="date">Filter op datum:</label>
                         <input type="date" id="date" name="date" value="{{ request('date') }}">
-                        <button type="submit">Filter</button>
+                        <button type="submit" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">toon reserveringen</button>
                     </div>
                 </form>
                 <a href="{{ route('reservation_klant.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Nieuwe Reservering</a>
@@ -41,12 +41,14 @@
                             </div>
                         @endif
 
-                        @if (count($reservations) > 0)
+                        @if (count($reservationsfilter) > 0)
                             <table class="min-w-full table-auto">
                                 <thead>
                                     <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">
+                                        <th class="py-4 px-6 text-left">Naam</th>
                                         <th class="py-4 px-6 text-left">Datum</th>
-                                        <th class="py-4 px-6 text-left">Tijd</th>
+                                        <th class="py-4 px-6 text-left">StartTijd</th>
+                                        <th class="py-4 px-6 text-left">Eindtijd</th>
                                         <th class="py-4 px-6 text-left">Baan</th>
                                         <th class="py-4 px-6 text-left">Duur</th>
                                         <th class="py-4 px-6 text-center">Status</th>
@@ -54,10 +56,12 @@
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-800 text-sm font-light">
-                                    @foreach ($reservations as $reservation)
+                                    @foreach ($reservationsfilter as $reservation)
                                         <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->customerName }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->date }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->startTime)) }}</td>
+                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->endTime)) }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->courtNumber }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->minutes }} minuten</td>
                                             <td class="py-3 px-6 text-center">
@@ -89,7 +93,7 @@
                             </div>
                         @else
                             <div class="p-4">
-                                <p class="bg-red-500 text-white p-4 rounded mb-4">Geen reserveringen gevonden.</p>
+                                <p class="bg-red-500 text-white p-4 rounded mb-4">er is geen informatie over deze periode.</p>
                             </div>
                         @endif
                     </div>

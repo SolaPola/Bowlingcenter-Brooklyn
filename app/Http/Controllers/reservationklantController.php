@@ -22,15 +22,21 @@ class ReservationKlantController extends Controller
         try {
 
              // Haal de datum op uit de request
-            $date = $request->input('date', now()->toDateString()); // Standaard: vandaag
-            
+            $date = $request->input('date'); // Standaard: vandaag
             // Get all reservations from stored procedure
             $allReservations = DB::select('CALL sp_get_all_reservations()');
             // Filter reservations by date if provided
             
-            $reservations = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$date]);
+            $reservationsfilter = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$date]);
             // Check if the user is authenticated
-
+            if (!$date) {
+                // Haal alle reserveringen op als er geen datum is opgegeven
+                $reservationsfilter = DB::select('CALL sp_get_all_reservations()');
+            } else {
+                // Filter reserveringen op de opgegeven datum
+                $reservationsfilter = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$date]);
+            }
+        
             // Get current page from request query
             $currentPage = $request->input('page', 1);
             
@@ -49,7 +55,9 @@ class ReservationKlantController extends Controller
                 ['path' => $request->url(), 'query' => $request->query()]
             );
             
-            return view('reservation_klant.index', compact('reservations', 'date'));
+           
+            return view('reservation_klant.index', compact('reservations', 'date','reservationsfilter'));
+            return view('reservation_klant.index.filter', compact('reservations', 'date'));
         } catch (Exception $e) {
             Log::error('Error in reservation index: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Er is een fout opgetreden bij het ophalen van de reserveringen.');

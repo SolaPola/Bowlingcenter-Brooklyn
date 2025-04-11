@@ -113,7 +113,8 @@ return new class extends Migration
             $table->date('date');
             $table->integer('minutes');
             $table->string('status', 50);
-            $table->integer('numberOfPeople')->nullable();
+            $table->integer('aantalvolwassen')->nullable();
+            $table->integer('aantalkinderen')->nullable();
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
