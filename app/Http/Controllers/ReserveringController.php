@@ -9,7 +9,7 @@ class ReserveringController extends Controller
 {
     public function index(Request $request)
     {
-        $datum = $request->input('datum');
+        $datum = $request->input('datum') ?? date('Y-m-d'); // Gebruik de huidige datum als standaard
 
         // Haal gegevens op via de stored procedure
         $query = 'CALL GetReserveringOverzicht()';
