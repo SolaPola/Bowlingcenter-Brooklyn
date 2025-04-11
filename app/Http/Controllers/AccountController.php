@@ -50,7 +50,56 @@ class AccountController extends Controller
         ]);
     }
 
-    // store
+    public function show($id)
+    {
+        // Get account details using the specific stored procedure
+        $accounts = DB::select('CALL spGetAccountById(?)', [$id]);
+        
+        // Check if account exists
+        if (empty($accounts)) {
+            return redirect()->route('accounts.index')
+                ->with('error', 'Account not found');
+        }
+        
+        $account = $accounts[0]; // Get the first (and only) result
+        
+        return view('account.show', compact('account'));
+    }
+
+    // edit
+    public function edit($id)
+    {
+        $account = Person::findOrFail($id);
+        $contacts = Contact::where('personId', $id)->where('isActive', 1)->get();
+        return view('account.edit', compact('account', 'contacts'));
+    }
 
     // update
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'firstName' => 'required|string|max:255',
+            'infix' => 'nullable|string|max:255',
+            'lastName' => 'required|string|max:255',
+            'mobileNumber' => 'required|string|max:255',
+            'emailAddress' => 'required|email|max:255',
+        ]);
+
+        // Set isAdult value (checkbox handling)
+        $isAdult = $request->has('isAdult') ? 1 : 0;
+        
+        // Call the stored procedure to update account information
+        DB::select('CALL spUpdateAccountInfo(?, ?, ?, ?, ?, ?, ?)', [
+            $id,
+            $request->firstName,
+            $request->infix,
+            $request->lastName,
+            $request->mobileNumber,
+            $request->emailAddress,
+            $isAdult
+        ]);
+
+        return redirect()->route('account.index')
+            ->with('success', 'Account updated successfully');
+    }
 }

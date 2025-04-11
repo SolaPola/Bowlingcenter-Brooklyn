@@ -90,7 +90,7 @@
                                         <td class="py-3 px-6 text-left">{{ $account->emailAddress }}</td>
                                         <td class="py-3 px-6 text-center">{{ $account->isAdult }}</td>
                                         <td class="py-3 px-6 text-center">
-                                            <a href="{{ route('accounts.edit', $account->personId) }}" 
+                                            <a href="{{ route('accounts.show', $account->personId) }}" 
                                             class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
                                         </td>
                                     </tr>
