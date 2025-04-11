@@ -276,7 +276,7 @@ return new class extends Migration
                 -- Only include active reservations
                 AND r.isActive = 1
                 -- Exclude canceled reservations
-                AND r.status != "canceled"
+                AND r.status != "Geannuleerd"
 
             ORDER BY r.date asc;
         END

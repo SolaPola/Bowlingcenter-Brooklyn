@@ -23,7 +23,7 @@ class ReservationKlantController extends Controller
 
              // Haal de datum op uit de request
             $date = $request->input('date', now()->toDateString()); // Standaard: vandaag
-            dd($date);
+            
             // Get all reservations from stored procedure
             $allReservations = DB::select('CALL sp_get_all_reservations()');
             // Filter reservations by date if provided
@@ -50,7 +50,6 @@ class ReservationKlantController extends Controller
             );
             
             return view('reservation_klant.index', compact('reservations', 'date'));
-            return view('reservation_klant.index', ['reservations' => $reservations]);
         } catch (Exception $e) {
             Log::error('Error in reservation index: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Er is een fout opgetreden bij het ophalen van de reserveringen.');

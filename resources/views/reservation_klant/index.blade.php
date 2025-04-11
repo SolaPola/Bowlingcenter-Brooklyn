@@ -15,7 +15,7 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <form method="GET" action="{{ route('reservation_klant.index') }}">
+                <form method="post" action="{{ route('reservation_klant.index.filter') }}">
                     @csrf
                     <div>
                         <label for="date">Filter op datum:</label>
