@@ -39,16 +39,16 @@ class DatabaseSeeder extends Seeder
             'updatedAt' => now(),
         ]);
         
-        // Create admin user
+        // Create admin user without personId
         $adminUser = User::create([
-            'person_id' => $adminPerson->id,
+            // Remove personId as it doesn't exist in the users table
             'name' => 'AdminUser',
             'email' => 'admin@example.com', 
             'password' => Hash::make('Admin1234'),
             'created_At' => now(),
             'updated_At' => now(),
         ]);
-
+        
         // Create test user manually with existing person and contact
         $testPerson = $people->first();
         $testContact = $contacts->first();
