@@ -15,11 +15,14 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <form action="{{route('reservation_klant.index.filter')}}" method="post" class="flex items-center">
-                        @csrf
-                        vanaf: <input type="date" name="date" id="date" class="border border-gray-300 p-2 m-1.5">
-                        <button class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">toon reserveringen</button>
-                    </form>
+                <form method="GET" action="{{ route('reservation_klant.index') }}">
+                    @csrf
+                    <div>
+                        <label for="date">Filter op datum:</label>
+                        <input type="date" id="date" name="date" value="{{ request('date') }}">
+                        <button type="submit">Filter</button>
+                    </div>
+                </form>
                 <a href="{{ route('reservation_klant.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Nieuwe Reservering</a>
 
             </div>

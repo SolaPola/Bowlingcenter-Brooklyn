@@ -20,11 +20,15 @@ class ReservationKlantController extends Controller
     public function index(Request $request)
     {
         try {
+
+             // Haal de datum op uit de request
+            $date = $request->input('date', now()->toDateString()); // Standaard: vandaag
+            dd($date);
             // Get all reservations from stored procedure
             $allReservations = DB::select('CALL sp_get_all_reservations()');
             // Filter reservations by date if provided
             
-            $reservations = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$request->input('date')]);
+            $reservations = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$date]);
             // Check if the user is authenticated
 
             // Get current page from request query
@@ -45,7 +49,7 @@ class ReservationKlantController extends Controller
                 ['path' => $request->url(), 'query' => $request->query()]
             );
             
-            return view('reservation_klant.index', compact('reservations'));
+            return view('reservation_klant.index', compact('reservations', 'date'));
             return view('reservation_klant.index', ['reservations' => $reservations]);
         } catch (Exception $e) {
             Log::error('Error in reservation index: ' . $e->getMessage());
