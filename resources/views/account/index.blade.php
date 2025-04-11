@@ -5,6 +5,29 @@
                 {{ __('Overzicht Klanten') }}
             </h2>
             <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+                <form action="{{ route('accounts.index') }}" method="GET" class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-4 bg-white p-2 rounded-lg shadow-md">
+                        <input type="text" 
+                               name="start_date" 
+                               class="rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" 
+                               placeholder="Kies startdatum"
+                               value="{{ request('start_date') }}"
+                               id="start_date">
+                        
+                        <span class="text-gray-500 font-medium">tot</span>
+                        
+                        <input type="text" 
+                               name="end_date" 
+                               class="rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" 
+                               placeholder="Kies einddatum"
+                               value="{{ request('end_date', date('Y-m-d')) }}"
+                               id="end_date">
+                    </div>
+
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600">
+                        Maak selectie
+                    </button>
+                </form>
                 <label class="flex items-center">
                     <span class="mr-2 text-white-900 toon">Toon Gegevens</span>
                     <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
@@ -28,6 +51,22 @@
                         @if (session('success'))
                             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                                 <span class="block sm:inline">{{ session('success') }}</span>
+                            </div>
+                        @endif
+                        
+                        @if (session('info'))
+                            <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4" role="alert">
+                                <span class="block sm:inline">{{ session('info') }}</span>
+                            </div>
+                        @endif
+                        
+                        @if(request('start_date') || request('end_date'))
+                            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                                <span class="block sm:inline">
+                                    Toont klanten geregistreerd 
+                                    {{ request('start_date') ? 'van ' . request('start_date') : '' }} 
+                                    tot {{ request('end_date', date('Y-m-d')) }}
+                                </span>
                             </div>
                         @endif
 
@@ -81,7 +120,20 @@
     </div>
 </x-app-layout>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
+    // Initialize Flatpickr datepickers
+    flatpickr("#start_date", {
+        dateFormat: "Y-m-d",
+        allowInput: true
+    });
+    
+    flatpickr("#end_date", {
+        dateFormat: "Y-m-d",
+        allowInput: true,
+        defaultDate: "{{ request('end_date', date('Y-m-d')) }}"
+    });
+
     document.getElementById('dataToggle').addEventListener('change', function() {
         const dataContainer = document.getElementById('dataContainer');
         const errorContainer = document.getElementById('errorContainer');
@@ -138,5 +190,11 @@
     
     .pagination a:hover {
         background-color: #f3f4f6;
+    }
+
+    /* Flatpickr customization */
+    .flatpickr-calendar {
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
 </style>

@@ -13,7 +13,10 @@ return new class extends Migration
     public function up(): void
     {
         $procedure = "
-            CREATE PROCEDURE spGetAccountsInfo()
+            CREATE PROCEDURE spGetAccountsInfo(
+                IN p_startDate DATE,
+                IN p_endDate DATE
+            )
             BEGIN
                 SELECT 
                     CONCAT(
@@ -32,8 +35,16 @@ return new class extends Migration
                 FROM person
                 LEFT JOIN contact ON person.id = contact.personId
                 LEFT JOIN typePerson ON person.typePerson_id = typePerson.id
+                LEFT JOIN customer ON person.id = customer.personId
                 WHERE person.isActive = 1 AND contact.isActive = 1
-                ORDER BY person.lastName, person.firstName;
+                AND (
+                    (p_startDate IS NULL AND p_endDate IS NULL) OR
+                    (person.createdAt BETWEEN 
+                        IFNULL(p_startDate, '1900-01-01') AND 
+                        IFNULL(p_endDate, CURRENT_TIMESTAMP())
+                    )
+                )
+                ORDER BY person.lastName ASC, person.firstName ASC;
             END
         ";
         
