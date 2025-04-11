@@ -47,10 +47,12 @@
                                 <tbody class="text-gray-800 text-sm font-light">
                                     @foreach ($reservations as $reservation)
                                         <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->customerName }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->date }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->startTime)) }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->courtNumber }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->minutes }} minuten</td>
+
                                             <td class="py-3 px-6 text-center">
                                                 @if($reservation->status === 'Betaald')
                                                     <span class="bg-green-500 text-white py-1 px-3 rounded-full text-xs font-medium">Bevestigd</span>
@@ -63,6 +65,7 @@
                                             <td class="py-3 px-6 text-center space-x-4">
                                                 <a href="{{ route('reservations.show', $reservation->id) }}" class="text-blue-600 hover:text-blue-800 transition duration-300">ⓘ</a>
                                                 <a href="{{ route('reservations.edit', $reservation->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
+                                                <a href="{{ route('reservations.edit.optie', $reservation->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
                                                 <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}" class="inline-block" onsubmit="return confirm('Weet u zeker dat u deze reservering wilt annuleren?');">
                                                     @csrf
                                                     @method('DELETE')

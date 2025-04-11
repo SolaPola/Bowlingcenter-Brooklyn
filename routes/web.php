@@ -36,6 +36,7 @@ Route::get('/reservation_klant/create', [ReservationKlantController::class, 'cre
 Route::post('/reservation_klant', [ReservationKlantController::class, 'store'])->name('reservation_klant.store');
 Route::get('/reservation_klant/{id}', [ReservationKlantController::class, 'show'])->name('reservation_klant.show');
 Route::get('/reservation_klant/{id}/edit', [ReservationKlantController::class, 'edit'])->name('reservation_klant.edit');
+Route::get('/reservation_klant/{id}/edit/optie', [ReservationKlantController::class, 'edit'])->name('reservation_klant.edit.optie');
 Route::put('/reservation_klant/{id}', [ReservationKlantController::class, 'update'])->name('reservation_klant.update');
 Route::delete('/reservation_klant/{id}', [ReservationKlantController::class, 'destroy'])->name('reservation_klant.destroy');
 
