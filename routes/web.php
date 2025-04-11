@@ -14,9 +14,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/reserveringen', [ReserveringController::class, 'index'])->name('reservering.index');
 
-Route::get('/reservering/wijzigen', function () {
-    return view('reservering.wijzigen');
-})->name('reservering.wijzigen');
+Route::get('/reservering/wijzigen', [ReserveringController::class, 'wijzigen'])->name('reservering.wijzigen');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

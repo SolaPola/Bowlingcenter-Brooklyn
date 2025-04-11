@@ -102,6 +102,22 @@ BEGIN
     ON 
         p.Id = r.PersoonId;
 END$$
+DROP PROCEDURE IF EXISTS GetReserveringDetails$$
+CREATE PROCEDURE GetReserveringDetails()
+BEGIN
+    SELECT 
+        CONCAT(p.Voornaam, " ", IFNULL(p.Tussenvoegsel, ""), " ", p.Achternaam) AS Naam,
+        r.Datum,
+        r.AantalVolwassen,
+        r.AantalKinderen,
+        r.BaanId
+    FROM 
+        persoon p
+    INNER JOIN 
+        reservering r
+    ON 
+        p.Id = r.PersoonId;
+END$$
 
 DELIMITER ;
 

@@ -30,4 +30,13 @@ class ReserveringController extends Controller
         // Geef de gegevens door aan de view
         return view('reservering.index', compact('reserveringen', 'datum'));
     }
+
+    public function wijzigen()
+    {
+        // Haal gegevens op via de stored procedure
+        $reserveringen = DB::select('CALL GetReserveringDetails()');
+
+        // Geef de gegevens door aan de view
+        return view('reservering.wijzigen', compact('reserveringen'));
+    }
 }
