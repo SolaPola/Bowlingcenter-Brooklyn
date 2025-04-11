@@ -9,6 +9,16 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
+                    @if (session('success'))
+                        <div class="mb-4 text-green-600">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="mb-4 text-red-600">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                     <table class="min-w-full table-auto">
                         <thead>
                             <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">
@@ -31,7 +41,9 @@
                                     <td class="py-3 px-6 text-center">{{ $reservering->AantalKinderen ?? 0 }}</td>
                                     <td class="py-3 px-6 text-center">{{ $reservering->BaanId }}</td>
                                     <td class="py-3 px-6 text-center">
-                                        ✎
+                                        <a href="{{ route('editbaan', ['id' => $reservering->BaanId]) }}" class="text-blue-500 hover:underline">
+                                            ✎
+                                        </a>
                                     </td>
                                 </tr>
                             @empty

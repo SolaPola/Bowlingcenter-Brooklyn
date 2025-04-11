@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReserveringController;
+use App\Http\Controllers\BaanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -15,6 +16,10 @@ Route::get('/dashboard', function () {
 Route::get('/reserveringen', [ReserveringController::class, 'index'])->name('reservering.index');
 
 Route::get('/reservering/wijzigen', [ReserveringController::class, 'wijzigen'])->name('reservering.wijzigen');
+
+Route::get('/editbaan/{id}', [BaanController::class, 'edit'])->name('editbaan');
+
+Route::put('/updatebaan/{id}', [BaanController::class, 'update'])->name('updatebaan');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
