@@ -11,9 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('typePerson', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->id()->unsigned();
+            $table->string('naam', 100);
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
+        });
+
         Schema::create('person', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
+            $table->foreignId('typePerson_id')->nullable()->constrained('typePerson'); // Make it nullable
             $table->string('firstName', 100);
             $table->string('infix', 50)->nullable();
             $table->string('lastName', 100);
@@ -147,5 +158,6 @@ return new class extends Migration
         Schema::dropIfExists('role');
         Schema::dropIfExists('contact');
         Schema::dropIfExists('person');
+        Schema::dropIfExists('typePerson');
     }
 };

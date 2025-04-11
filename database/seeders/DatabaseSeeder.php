@@ -13,6 +13,7 @@ use App\Models\Court;
 use App\Models\Timeslot;
 use App\Models\Reservation;
 use App\Models\Order;
+use App\Models\TypePerson;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -24,14 +25,44 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create the three default TypePerson records
+        TypePerson::create([
+            'naam' => 'Klant',
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+        
+        TypePerson::create([
+            'naam' => 'Gast',
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+        
+        $medewerkerType = TypePerson::create([
+            'naam' => 'Medewerker',
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+        
+        // Get type person IDs for use in person creation
+        $typePersons = TypePerson::all();
+        
         // Seed person and contact records first
-        $people = Person::factory(20)->create();
+        $people = Person::factory(20)->create([
+            'typePerson_id' => function() use ($typePersons) {
+                return $typePersons->random()->id;
+            }
+        ]);
 
         // Create contacts
         $contacts = Contact::factory(20)->create();
         
-        // Create admin person
+        // Create admin person with typePerson_id
         $adminPerson = Person::create([
+            'typePerson_id' => $medewerkerType->id, // Add the typePerson_id
             'firstName' => 'Admin',
             'lastName' => 'User',
             'isActive' => true,
