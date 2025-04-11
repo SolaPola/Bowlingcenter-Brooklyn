@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ScoreController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,6 +25,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/order/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
     Route::get('/order/create', [OrderController::class, 'create'])->name('order.create');
 
+
+    Route::get('/score', [ScoreController::class, 'index'])->name('score.index');
+    Route::get('/score/create', [ScoreController::class, 'create'])->name('score.create');
+    Route::post('/score', [ScoreController::class, 'store'])->name('score.store');
+    Route::get('/score/{id}/edit', [ScoreController::class, 'edit'])->name('score.edit');
+    Route::get('/score/{reservation}', [ScoreController::class, 'show'])->name('score.show');
 });
 
 
