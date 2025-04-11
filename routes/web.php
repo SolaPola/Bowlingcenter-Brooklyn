@@ -20,8 +20,8 @@ Route::get('/dashboard', function () {
 
  // Use the resource route which defines all CRUD routes
  Route::resource('reservations', ReservationController::class);
- Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
- Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
+    Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
+    Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
     Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
     Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
     Route::get('/reservations/{id}/edit', [ReservationController::class, 'edit'])->name('reservations.edit');
@@ -57,7 +57,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/order/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
     Route::get('/order/create', [OrderController::class, 'create'])->name('order.create');
 
-});
 
 
 

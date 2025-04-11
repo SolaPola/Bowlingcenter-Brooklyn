@@ -35,19 +35,6 @@ return new class extends Migration
             $table->dateTime('updatedAt', 6);
         });
 
-        // Schema::create('users', function (Blueprint $table) {
-        //     $table->engine = 'InnoDB';
-        //     $table->id()->unsigned();
-        //     $table->foreignId('personId')->constrained('person');
-        //     $table->foreignId('contactId')->constrained('contact');
-        //     $table->string('username', 100)->unique();
-        //     $table->string('password', 255);
-        //     $table->boolean('isActive')->default(true);
-        //     $table->string('note', 255)->nullable();
-        //     $table->dateTime('createdAt', 6);
-        //     $table->dateTime('updatedAt', 6);
-        // });
-
         Schema::create('role', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
@@ -159,8 +146,6 @@ return new class extends Migration
         Schema::dropIfExists('score');
         Schema::dropIfExists('employee');
         Schema::dropIfExists('role');
-        // Schema::dropIfExists('users');
-        // Schema::dropIfExists('users');
         Schema::dropIfExists('contact');
         Schema::dropIfExists('person');
     }

@@ -29,6 +29,25 @@ class DatabaseSeeder extends Seeder
 
         // Create contacts
         $contacts = Contact::factory(20)->create();
+        
+        // Create admin person
+        $adminPerson = Person::create([
+            'firstName' => 'Admin',
+            'lastName' => 'User',
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+        
+        // Create admin user
+        $adminUser = User::create([
+            'person_id' => $adminPerson->id,
+            'name' => 'AdminUser',
+            'email' => 'admin@example.com', 
+            'password' => Hash::make('Admin1234'),
+            'created_At' => now(),
+            'updated_At' => now(),
+        ]);
 
         // Create test user manually with existing person and contact
         $testPerson = $people->first();
@@ -52,8 +71,10 @@ class DatabaseSeeder extends Seeder
 
         // Seed roles for users
         foreach ($allUsers as $user) {
+            $roleName = ($user->id === $adminUser->id) ? 'Administrator' : 'Gebruiker';
             Role::factory()->create([
                 'userId' => $user->id,
+                'name' => $roleName,
             ]);
         }
 
