@@ -29,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-     // Use the resource route which defines all CRUD routes
+    // Use the resource route which defines all CRUD routes
     Route::resource('reservations', ReservationController::class);
         Route::get('/reservations', [ReservationController::class, 'index'])->name('reservations.index');
         Route::get('/reservations/create', [ReservationController::class, 'create'])->name('reservations.create');
@@ -39,26 +39,26 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/reservations/{id}', [ReservationController::class, 'update'])->name('reservations.update');
         Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
 
-    // use the resource route which defines all CRUD routes
-    Route::resource('accounts', OrderController::class);
-        Route::get('/accounts', [OrderController::class, 'index'])->name('accounts.index');
-        Route::get('/accounts/create', [OrderController::class, 'create'])->name('accounts.create');
-        Route::post('/accounts', [OrderController::class, 'store'])->name('accounts.store');
-        Route::get('/accounts/{id}', [OrderController::class, 'show'])->name('accounts.show');
-        Route::get('/accounts/{id}/edit', [OrderController::class, 'edit'])->name('accounts.edit');
-        Route::put('/accounts/{id}', [OrderController::class, 'update'])->name('accounts.update');
-        Route::delete('/accounts/{id}', [OrderController::class, 'destroy'])->name('accounts.destroy');
-
-
-    // use the resource route which defines all CRUD routes
+    // Orders routes - keep these separate from accounts
+    Route::resource('order', OrderController::class);
         Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+        Route::get('/order/create', [OrderController::class, 'create'])->name('order.create');
         Route::post('/order', [OrderController::class, 'store'])->name('order.store');
         Route::put('/order/{id}', [OrderController::class, 'update'])->name('order.update');
         Route::delete('/order/{id}', [OrderController::class, 'destroy'])->name('order.destroy');
         Route::get('/order/{id}/edit', [OrderController::class, 'edit'])->name('order.edit');
-        Route::get('/order/create', [OrderController::class, 'create'])->name('order.create');
-    });
-    
+
+    // Account routes - point to AccountController instead of OrderController
+    Route::resource('accounts', AccountController::class);
+        Route::get('/accounts', [AccountController::class, 'index'])->name('accounts.index');
+        Route::get('/accounts/create', [AccountController::class, 'create'])->name('accounts.create');
+        Route::post('/accounts', [AccountController::class, 'store'])->name('accounts.store');
+        Route::get('/accounts/{id}', [AccountController::class, 'show'])->name('accounts.show');
+        Route::get('/accounts/{id}/edit', [AccountController::class, 'edit'])->name('accounts.edit');
+        Route::put('/accounts/{id}', [AccountController::class, 'update'])->name('accounts.update');
+        Route::delete('/accounts/{id}', [AccountController::class, 'destroy'])->name('accounts.destroy');
+});
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -67,12 +67,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.delete');
 
-
-
 });
-
-
-
-
 
 require __DIR__.'/auth.php';
