@@ -16,9 +16,7 @@ class CreateGetReserveringOverzichtSp extends Migration
             CREATE PROCEDURE GetReserveringOverzicht()
             BEGIN
                 SELECT 
-                    p.Voornaam,
-                    p.Tussenvoegsel,
-                    p.Achternaam,
+                    CONCAT(p.Voornaam, " ", IFNULL(p.Tussenvoegsel, ""), " ", p.Achternaam) AS Naam,
                     r.Datum,
                     r.AantalUren,
                     r.AantalVolwassen,

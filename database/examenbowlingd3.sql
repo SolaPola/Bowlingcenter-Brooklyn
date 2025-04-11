@@ -84,28 +84,26 @@ INSERT INTO `reservering` (`Id`, `PersoonId`, `OpeningstijdId`, `BaanId`, `Pakke
 (5, 5, 2, 8, 1, 'Bevestigd', '2022122800005', '2022-12-28', 1, '14:00', '15:00', 3, NULL),
 (6, 5, 2, 8, 1, 'Bevestigd', '2022122800006', '2022-12-28', 2, '19:00', '21:00', 2, NULL);
 
--- DELIMITER $$
+DELIMITER $$
 
--- CREATE PROCEDURE GetReserveringOverzicht()
--- BEGIN
---     SELECT 
---         p.Voornaam,
---         p.Tussenvoegsel,
---         p.Achternaam,
---         r.Datum,
---         r.AantalUren,
---         r.AantalVolwassen,
---         r.AantalKinderen,
---         r.ReserveringStatus
---     FROM 
---         persoon p
---     INNER JOIN 
---         reservering r
---     ON 
---         p.Id = r.PersoonId;
--- END$$
+CREATE PROCEDURE GetReserveringOverzicht()
+BEGIN
+    SELECT 
+        CONCAT(p.Voornaam, " ", IFNULL(p.Tussenvoegsel, ""), " ", p.Achternaam) AS Naam,
+        r.Datum,
+        r.AantalUren,
+        r.AantalVolwassen,
+        r.AantalKinderen,
+        r.ReserveringStatus
+    FROM 
+        persoon p
+    INNER JOIN 
+        reservering r
+    ON 
+        p.Id = r.PersoonId;
+END$$
 
--- DELIMITER ;
+DELIMITER ;
 
 COMMIT;
 
