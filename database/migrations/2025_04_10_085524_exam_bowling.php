@@ -37,6 +37,7 @@ return new class extends Migration
         Schema::create('contact', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
+            $table->foreignId('personId')->constrained('person');
             $table->string('email', 255)->unique();
             $table->string('phoneNumber', 15)->nullable();
             $table->string('address', 255)->nullable();
