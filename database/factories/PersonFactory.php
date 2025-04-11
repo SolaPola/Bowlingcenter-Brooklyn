@@ -12,23 +12,32 @@ class PersonFactory extends Factory
 
     private static $people = [
         [
-            'firstName' => 'Bert',
-            'infix' => 'van',
-            'lastName' => 'Linge',
+            'firstName' => ' ',
+            'infix' => ' ',
+            'lastName' => ' ',
             'isActive' => true,
-            'note' => 'Contactpersoon Venco',
-            'createdAt' => '2024-11-22 00:00:00',
-            'updatedAt' => '2024-11-22 00:00:00',
+            'note' => NULL,
+            'createdAt' => '2024-01-01 00:00:00',
+            'updatedAt' => '2024-01-01 00:00:00'
         ],
         [
-            'firstName' => 'Jasper',
-            'infix' => 'del',
-            'lastName' => 'Monte',
+            'firstName' => ' ',
+            'infix' => ' ',
+            'lastName' => ' ',
             'isActive' => true,
-            'note' => 'Contactpersoon Astra Sweets',
-            'createdAt' => '2024-11-22 00:00:00',
-            'updatedAt' => '2024-11-22 00:00:00',
-        ]
+            'note' => NULL,
+            'createdAt' => '2024-01-01 00:00:00',
+            'updatedAt' => '2024-01-01 00:00:00'
+        ],
+        [
+            'firstName' => ' ',
+            'infix' => ' ',
+            'lastName' => ' ',
+            'isActive' => true,
+            'note' => NULL,
+            'createdAt' => '2024-01-01 00:00:00',
+            'updatedAt' => '2024-01-01 00:00:00'
+        ],
     ];
 
     public function definition(): array

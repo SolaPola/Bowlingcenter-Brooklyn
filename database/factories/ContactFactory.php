@@ -18,15 +18,18 @@ class ContactFactory extends Factory
 
     private static $contacts = [
         [
-            'email' => 'info@venco.nl',
-            'phoneNumber' => '0570-123456',
-            'address' => 'Suikerweg 123, Deventer',
-            'isActive' => true,
-            'note' => 'Leverancier van drop producten',
-            'createdAt' => '2024-11-22 00:00:00',
-            'updatedAt' => '2024-11-22 00:00:00',
+            'phoneNumber' => '',
+            'address' => ''
         ],
-        
+        [
+            'phoneNumber' => '',
+            'address' => ''
+        ],
+        [
+            'phoneNumber' => '',
+            'address' => ''
+        ],
+
     ];
 
     /**
