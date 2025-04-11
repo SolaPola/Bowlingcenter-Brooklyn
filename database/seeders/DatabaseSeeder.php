@@ -48,48 +48,60 @@ class DatabaseSeeder extends Seeder
         ]);
         
         // Create contacts first - these will include our supplier contacts
-        $contacts = Contact::factory(15)->create();
+        $contacts = Contact::factory(5)->create();
         
-        // Create people with associations to appropriate type and contacts
-        // First 7 people are supplier contacts (will be employees)
-        $supplierPeople = [];
-        for ($i = 0; $i < 8; $i++) {
-            $person = Person::factory()->create([
-                'typePerson_id' => $medewerkerType->id,
-            ]);
-            $supplierPeople[] = $person;
-        }
-        
-        // Create some regular customers (with typePerson_id = klant)
-        $customerPeople = [];
-        for ($i = 0; $i < 8; $i++) {
-            $person = Person::factory()->create([
-                'typePerson_id' => $klantType->id,
-            ]);
-            $customerPeople[] = $person;
-        }
-        
-        // Create some guests
-        $guestPeople = [];
-        for ($i = 0; $i < 8; $i++) {
-            $person = Person::factory()->create([
-                'typePerson_id' => $gastType->id,
-            ]);
-            $guestPeople[] = $person;
-        }
-        
-        // Combine all people for further use
-        $people = array_merge($supplierPeople, $customerPeople, $guestPeople);
+        // Create only the explicitly defined people
+        $people = [];
         
         // Create admin person with typePerson_id
         $adminPerson = Person::create([
             'typePerson_id' => $medewerkerType->id,
             'firstName' => 'Admin',
             'lastName' => 'User',
+            'isAdult' => true, // Add isAdult field
             'isActive' => true,
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
+        
+        // Add a test employee
+        $employeePerson = Person::create([
+            'typePerson_id' => $medewerkerType->id,
+            'firstName' => 'Test',
+            'lastName' => 'Employee',
+            'isAdult' => true, // Add isAdult field
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+        
+        // Add a test customer
+        $customerPerson = Person::create([
+            'typePerson_id' => $klantType->id,
+            'firstName' => 'Test',
+            'lastName' => 'Customer',
+            'isAdult' => true, // Add isAdult field
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+        
+        // Add a test guest
+        $guestPerson = Person::create([
+            'typePerson_id' => $gastType->id,
+            'firstName' => 'Test',
+            'lastName' => 'Guest',
+            'isAdult' => false, // Add isAdult field
+            'isActive' => true,
+            'createdAt' => now(),
+            'updatedAt' => now(),
+        ]);
+        
+        // Group people by type for later use
+        $supplierPeople = [$employeePerson, $adminPerson];
+        $customerPeople = [$customerPerson];
+        $guestPeople = [$guestPerson];
+        $people = array_merge($supplierPeople, $customerPeople, $guestPeople);
         
         // Create admin user
         $adminUser = User::create([
@@ -100,8 +112,8 @@ class DatabaseSeeder extends Seeder
             'updated_At' => now(),
         ]);
         
-        // Create test user manually with first person and contact
-        $testPerson = $people[0];
+        // Create test user with first person and contact
+        $testPerson = $employeePerson;
         $testContact = $contacts[0];
 
         $testUser = User::create([
@@ -113,7 +125,6 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Create other users with UserFactory
-        $users = User::factory(9)->create();
         $allUsers = User::all();
 
         // Seed roles for users
@@ -137,14 +148,17 @@ class DatabaseSeeder extends Seeder
 
         // Seed customers - use the customer people array
         foreach ($customerPeople as $person) {
+            // Create a score for this customer
+            $score = Score::factory()->create();
+            
             Customer::factory()->create([
                 'personId' => $person->id,
-                'scoreId' => $scores->random()->id,
+                'scoreId' => $score->id,
             ]);
         }
 
-        // Seed employees - use the supplier people (first 7 were supplier contacts) and admin
-        foreach (array_merge($supplierPeople, [$adminPerson]) as $person) {
+        // Seed employees - use the supplier people and admin
+        foreach ($supplierPeople as $person) {
             Employee::factory()->create([
                 'personId' => $person->id,
             ]);

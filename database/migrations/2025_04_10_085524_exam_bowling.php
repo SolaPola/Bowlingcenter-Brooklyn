@@ -28,6 +28,8 @@ return new class extends Migration
             $table->string('firstName', 100);
             $table->string('infix', 50)->nullable();
             $table->string('lastName', 100);
+            $table->string('nickname', 50)->nullable();
+            $table->boolean('isAdult');
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
