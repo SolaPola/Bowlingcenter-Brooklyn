@@ -45,7 +45,6 @@
                             <table class="min-w-full table-auto">
                                 <thead>
                                     <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">
-                                        <th class="py-4 px-6 text-left">Naam</th>
                                         <th class="py-4 px-6 text-left">Datum</th>
                                         <th class="py-4 px-6 text-left">Tijd</th>
                                         <th class="py-4 px-6 text-left">Baan</th>
@@ -57,7 +56,6 @@
                                 <tbody class="text-gray-800 text-sm font-light">
                                     @foreach ($reservationsfilter as $reservation)
                                         <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->customerName }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->date }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->startTime)) }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->courtNumber }}</td>

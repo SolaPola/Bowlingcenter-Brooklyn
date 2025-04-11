@@ -256,9 +256,6 @@ return new class extends Migration
                 ,c.number as courtNumber
                 ,t.startTime 
                 ,t.endTime
-                ,p.firstName
-                ,p.infix
-                ,p.lastName
                 ,CONCAT_WS(" ", p.firstName, p.infix, p.lastName) as customerName
             FROM reservation r
 
@@ -275,8 +272,6 @@ return new class extends Migration
             WHERE 
                 -- Match the reservation date
                 r.date >= reservation_date 
-                -- Ensure the reservation date is today or in the future
-                AND r.date >= CURDATE() 
                 -- Only include active reservations
                 AND r.isActive = 1
                 -- Exclude canceled reservations

@@ -36,7 +36,6 @@ class ReservationKlantController extends Controller
                 // Filter reserveringen op de opgegeven datum
                 $reservationsfilter = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$date]);
             }
-        
             // Get current page from request query
             $currentPage = $request->input('page', 1);
             
