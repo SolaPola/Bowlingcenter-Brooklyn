@@ -69,9 +69,18 @@ class AccountController extends Controller
     // edit
     public function edit($id)
     {
-        $account = Person::findOrFail($id);
-        $contacts = Contact::where('personId', $id)->where('isActive', 1)->get();
-        return view('account.edit', compact('account', 'contacts'));
+        // Get account details using the stored procedure
+        $accounts = DB::select('CALL spGetAccountById(?)', [$id]);
+        
+        // Check if account exists
+        if (empty($accounts)) {
+            return redirect()->route('accounts.index')
+                ->with('error', 'Account not found');
+        }
+        
+        $account = $accounts[0]; // Get the first (and only) result
+        
+        return view('account.edit', compact('account'));
     }
 
     // update
@@ -99,7 +108,7 @@ class AccountController extends Controller
             $isAdult
         ]);
 
-        return redirect()->route('account.index')
+        return redirect()->route('accounts.index')
             ->with('success', 'Account updated successfully');
     }
 }
