@@ -35,10 +35,9 @@ class BaanController extends Controller
 
         // Controleer of er kinderen zijn in de reservering
         if ($reservering->AantalKinderen > 0) {
-            // Controleer of de geselecteerde baan hekjes heeft
-            $baan = DB::table('baan')->where('Id', $request->input('baanId'))->first();
-            if (!$baan->heeftHek) {
-                return redirect()->back()->with('error', 'Deze baan is ongeschikt voor kinderen omdat deze geen hekjes heeft.');
+            // Zorg ervoor dat alleen BaanId 7 of 8 geselecteerd kan worden
+            if (!in_array($request->input('baanId'), [7, 8])) {
+                return redirect()->back()->with('error', 'Deze baan is ongeschikt voor kinderen. Alleen banen met hekjes (7 of 8) zijn toegestaan.');
             }
         }
 
