@@ -14,6 +14,21 @@ class ContactFactory extends Factory
      */
     protected $model = Contact::class;
 
+    private static $index = 0;
+
+    private static $contacts = [
+        [
+            'email' => 'info@venco.nl',
+            'phoneNumber' => '0570-123456',
+            'address' => 'Suikerweg 123, Deventer',
+            'isActive' => true,
+            'note' => 'Leverancier van drop producten',
+            'createdAt' => '2024-11-22 00:00:00',
+            'updatedAt' => '2024-11-22 00:00:00',
+        ],
+        
+    ];
+
     /**
      * Define the model's default state.
      *
@@ -21,14 +36,21 @@ class ContactFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            'email' => $this->faker->unique()->safeEmail(),
-            'phoneNumber' => substr($this->faker->numerify('##########'), 0, 15), // Ensure it's within 15 chars
-            'address' => $this->faker->address(),
-            'isActive' => true,
-            'note' => $this->faker->sentence(),
-            'createdAt' => now(),
-            'updatedAt' => now(),
-        ];
+        // If we've used all predefined contacts, start generating random ones
+        if (self::$index >= count(self::$contacts)) {
+            return [
+                'email' => $this->faker->unique()->safeEmail(),
+                'phoneNumber' => substr($this->faker->numerify('##########'), 0, 15),
+                'address' => $this->faker->address(),
+                'isActive' => true,
+                'note' => $this->faker->sentence(),
+                'createdAt' => now(),
+                'updatedAt' => now(),
+            ];
+        }
+        
+        $contact = self::$contacts[self::$index];
+        self::$index++;
+        return $contact;
     }
 }
