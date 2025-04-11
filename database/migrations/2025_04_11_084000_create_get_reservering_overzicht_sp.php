@@ -11,6 +11,7 @@ class CreateGetReserveringOverzichtSp extends Migration
      */
     public function up()
     {
+        DB::unprepared('DROP PROCEDURE IF EXISTS GetReserveringOverzicht');
         DB::unprepared('
             CREATE PROCEDURE GetReserveringOverzicht()
             BEGIN
