@@ -18,6 +18,9 @@
                     <x-nav-link :href="route('reservering.index')" :active="request()->routeIs('reservering.index')">
                         {{ __('Overzicht Bevestigde Reservering') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('reservering.wijzigen')" :active="request()->routeIs('reservering.wijzigen')">
+                        {{ __('Bestaand Baan Wijzigen') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -77,6 +80,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('reservering.index')" :active="request()->routeIs('reservering.index')">
                 {{ __('Overzicht Bevestigde Reservering') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('reservering.wijzigen')" :active="request()->routeIs('reservering.wijzigen')">
+                {{ __('Bestaand Baan Wijzigen') }}
             </x-responsive-nav-link>
         </div>
 
