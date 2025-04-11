@@ -138,6 +138,7 @@ return new class extends Migration
             $table->integer('orderNumber');
             $table->date('orderDate');
             $table->string('packageType',);
+            $table->string('packageType',);
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
@@ -158,6 +159,7 @@ return new class extends Migration
         Schema::dropIfExists('score');
         Schema::dropIfExists('employee');
         Schema::dropIfExists('role');
+        // Schema::dropIfExists('users');
         // Schema::dropIfExists('users');
         Schema::dropIfExists('contact');
         Schema::dropIfExists('person');

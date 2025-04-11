@@ -14,7 +14,7 @@ class Order extends Model
 
     protected $fillable = [
         'reservationId', 'orderNumber', 'orderDate',
-        'isActive', 'note', 'createdAt', 'updatedAt'
+        'packageType','isActive', 'note', 'createdAt', 'updatedAt'
     ];
 
     public $timestamps = false;
