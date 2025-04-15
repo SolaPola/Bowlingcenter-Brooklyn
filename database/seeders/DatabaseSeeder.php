@@ -144,7 +144,7 @@ class DatabaseSeeder extends Seeder
             // Code for linking would go here if your models have a relationship between Person and Contact
         }
 
-        // Seed scores
+        // Seed scores - make sure we're using the updated ScoreFactory
         $scores = Score::factory(10)->create();
 
         // Seed customers - use the customer people array

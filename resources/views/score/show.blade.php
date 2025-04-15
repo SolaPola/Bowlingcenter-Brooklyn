@@ -2,54 +2,38 @@
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-semibold text-gray-800">Reservering Details</h2>
-                        <a href="{{ route('score.index') }}"
-                            class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded">
-                            Terug naar overzicht
-                        </a>
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg">
+                <div class="p-8 text-gray-900">
+                    <h1 class="text-3xl font-bold mb-6 text-indigo-800 border-b pb-2">Score Details</h1>
+
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-sm mb-6">
+                        <table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+                            <thead class="bg-indigo-100">
+                                <tr>
+                                    <th class="py-3 px-6 border-b text-left font-semibold text-indigo-800">Score</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-4 px-6 border-b text-lg font-medium">{{ $score->amount }}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
                     </div>
 
-                    <div class="bg-gray-50 p-6 rounded-lg shadow">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <p class="text-gray-600 text-sm">Naam:</p>
-                                <p class="text-gray-900 font-medium">{{ $score->Naam ?? 'N/A' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 text-sm">Datum:</p>
-                                <p class="text-gray-900 font-medium">{{ $score->Datum ?? 'N/A' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 text-sm">Aantal Uren:</p>
-                                <p class="text-gray-900 font-medium">{{ $score->AantalUren ?? 'N/A' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 text-sm">Begintijd:</p>
-                                <p class="text-gray-900 font-medium">{{ $score->BeginTijd ?? 'N/A' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 text-sm">Eindtijd:</p>
-                                <p class="text-gray-900 font-medium">{{ $score->EindTijd ?? 'N/A' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 text-sm">Aantal Volwassenen:</p>
-                                <p class="text-gray-900 font-medium">{{ $score->AantalVolwassenen ?? 'N/A' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-gray-600 text-sm">Aantal Kinderen:</p>
-                                <p class="text-gray-900 font-medium">{{ $score->AantalKinderen ?? 'N/A' }}</p>
-                            </div>
 
-                            @if (isset($score->ScorePunten))
-                                <div class="md:col-span-2">
-                                    <p class="text-gray-600 text-sm">Score Punten:</p>
-                                    <p class="text-gray-900 font-medium text-lg">{{ $score->ScorePunten }}</p>
-                                </div>
-                            @endif
-                        </div>
+                    <div class="mt-6 flex justify-start">
+                        <a href="{{ route('score.index') }}"
+                            class="px-6 py-2.5 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition duration-200 ease-in-out flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            Back to Scores
+                        </a>
                     </div>
                 </div>
             </div>

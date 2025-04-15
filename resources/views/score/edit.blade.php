@@ -1,43 +1,50 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Edit Score</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-white text-gray-800">
 
-    <header class="bg-yellow-400 shadow">
-        <div class="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-gray-900">Edit Score</h1>
+    <x-app-layout>
+        <x-slot name="header">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Edit Score') }}
+            </h2>
+        </x-slot>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-white border-b border-gray-200">
+                        @if(isset($score) && $score)
+                            <form method="POST" action="{{ route('score.update', $score->id) }}">
+                                @csrf
+                                @method('PUT')
+                                
+                                <div class="mb-4">
+                                    <label for="amount" class="block text-gray-700 text-sm font-bold mb-2">
+                                        Amount:
+                                    </label>
+                                    <input type="number" name="amount" id="amount" 
+                                        value="{{ old('amount', $score->amount) }}"
+                                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                    
+                                    @error('amount')
+                                        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                        Update Score
+                                    </button>
+                                    
+                                    <a href="{{ route('score.index') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                                        Cancel
+                                    </a>
+                                </div>
+                            </form>
+                        @else
+                            <div class="text-red-500">
+                                Score not found. <a href="{{ route('score.index') }}" class="text-blue-500 hover:text-blue-800">Return to scores list</a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 py-6">
-        <form action="{{ route('score.update', $id) }}" method="POST" class="space-y-4">
-            @csrf
-            @method('PUT')
-            <div>
-                <label for="firstName" class="block text-sm font-medium">First Name</label>
-                <input type="text" id="firstName" name="firstName" value="{{ old('firstName', $score->firstName) }}" class="w-full border-gray-300 rounded-md shadow-sm">
-            </div>
-            <div>
-                <label for="lastName" class="block text-sm font-medium">Last Name</label>
-                <input type="text" id="lastName" name="lastName" value="{{ old('lastName', $score->lastName) }}" class="w-full border-gray-300 rounded-md shadow-sm">
-            </div>
-            <div>
-                <label for="amount" class="block text-sm font-medium">Score</label>
-                <input type="number" id="amount" name="amount" value="{{ old('amount', $score->amount) }}" class="w-full border-gray-300 rounded-md shadow-sm">
-            </div>
-            <div>
-                <label for="membershipType" class="block text-sm font-medium">Membership Type</label>
-                <input type="text" id="membershipType" name="membershipType" value="{{ old('membershipType', $score->membershipType) }}" class="w-full border-gray-300 rounded-md shadow-sm">
-            </div>
-            <div class="flex justify-end">
-                <button type="submit" class="bg-yellow-400 text-gray-900 px-4 py-2 rounded-md shadow">Update</button>
-            </div>
-        </form>
-    </main>
-
-</body>
-</html>
+    </x-app-layout>
