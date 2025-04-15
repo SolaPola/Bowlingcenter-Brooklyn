@@ -29,7 +29,7 @@ class CreateInsertPersonScoreMembershipProcedure extends Migration
                 VALUES (firstName, lastName, NOW(), NOW());
                 SET personId = LAST_INSERT_ID();
 
-                -- Insert into score table
+                -- Insertinto score table
                 INSERT INTO score (amount, createdAt, updatedAt)
                 VALUES (amount, NOW(), NOW());
                 SET scoreId = LAST_INSERT_ID();
