@@ -29,9 +29,19 @@ class BaanController extends Controller
             'status' => 'required|string|max:50',
         ]);
 
-        DB::statement('CALL sp_update_reservation(?, ?, NULL, NULL, NULL, ?, NULL, NULL)', [
+        // Fetch the timeslotId, date, and minutes from the reservation details
+        $reservering = DB::select('CALL GetReserveringDetails(?)', [$id])[0] ?? null;
+
+        if (!$reservering) {
+            return redirect()->route('reservering.wijzigen')->with('error', 'Reservering niet gevonden.');
+        }
+
+        DB::statement('CALL sp_update_reservation(?, ?, ?, ?, ?, ?, NULL, NULL)', [
             $id,
             $validated['baanId'],
+            $reservering->timeslotId, // Pass the timeslotId
+            $reservering->Reserveringsdatum, // Pass the date
+            $reservering->minutes, // Pass the minutes
             $validated['status'],
         ]);
 

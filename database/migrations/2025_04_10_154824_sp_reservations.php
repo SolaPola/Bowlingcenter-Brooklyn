@@ -225,6 +225,7 @@ return new class extends Migration
             CREATE PROCEDURE GetReserveringOverzicht(IN p_datum DATE)
             BEGIN
                 SELECT 
+                    r.id, -- Include the reservation ID
                     CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
                     r.date AS Reserveringsdatum,
                     r.minutes AS Uren,
@@ -249,6 +250,9 @@ return new class extends Migration
             CREATE PROCEDURE GetReserveringDetails(IN reservering_id INT)
             BEGIN
                 SELECT 
+                    r.id,
+                    r.timeslotId, -- Include the timeslot ID
+                    r.minutes, -- Include the minutes
                     CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
                     r.date AS Reserveringsdatum,
                     r.numberOfPeople AS Volwassenen,
