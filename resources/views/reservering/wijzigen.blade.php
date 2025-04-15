@@ -72,7 +72,11 @@
                                     <td class="py-3 px-6 text-center">{{ $reservering->Kinderen ?? 0 }}</td>
                                     <td class="py-3 px-6 text-center">{{ $reservering->BaanNummer }}</td>
                                     <td class="py-3 px-6 text-center">{{ $reservering->Status }}</td>
-
+                                    <td class="py-3 px-6 text-center">
+                                        <a href="{{ route('editbaan', ['id' => $reservering->id]) }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+                                            Wijzig Baan
+                                        </a>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
