@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Score;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 
 class ScoreController extends Controller
 {
     // Toon de lijst van scores
     public function index()
     {
-        $scores = DB::table('score')
-            ->join('customer', 'score.id', '=', 'customer.scoreId')
-            ->join('person', 'customer.personId', '=', 'person.id') // Updated join to use customer.personId
-            ->select('score.id', 'person.firstName', 'person.lastName', 'score.amount', 'customer.membershipType')
-            ->get();
+        $scores = DB::select('CALL GetScoreOverview()');
 
         return view('score.index', compact('scores'));
     }
@@ -48,8 +46,10 @@ class ScoreController extends Controller
     // Toon een specifieke score
     public function show($id)
     {
-        // Logica om een specifieke score op te halen
-        return view('score.show', compact('id')); // Zorg dat de view bestaat in resources/views/score/show.blade.php
+        // Use Eloquent to fetch the record
+        $score = Score::findOrFail($id);
+
+        return view('score.show', compact('score'));
     }
 
     // Toon het formulier om een score te bewerken
