@@ -29,8 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/score', [ScoreController::class, 'index'])->name('score.index');
     Route::get('/score/create', [ScoreController::class, 'create'])->name('score.create');
     Route::post('/score', [ScoreController::class, 'store'])->name('score.store');
-    Route::get('/score/{id}/edit', [ScoreController::class, 'edit'])->name('score.edit');
-    Route::get('/score/{reservation}', [ScoreController::class, 'show'])->name('score.show');
+    Route::get('/score/edit/{id}', [ScoreController::class, 'edit'])->name('score.edit');
+    Route::get('/score/{id}', [ScoreController::class, 'show'])->name('score.show');
 });
 
 

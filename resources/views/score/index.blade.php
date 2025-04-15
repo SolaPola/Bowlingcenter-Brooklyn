@@ -56,29 +56,40 @@
                             Aantal Kinderen</th>
                         <th
                             class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Score</th>
+                            Wijzigen</th>
+                        <th
+                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
+                            Score punten</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($scoreOverview as $row)
+                    @forelse ($scoreOverview as $score)
                         <tr>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $row->Naam }}</td>
+                                {{ $score->Naam }}</td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $row->Datum }}</td>
+                                {{ $score->Datum }}</td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $row->AantalUren }}</td>
+                                {{ $score->AantalUren }}</td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $row->BeginTijd }}</td>
+                                {{ $score->BeginTijd }}</td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $row->EindTijd }}</td>
+                                {{ $score->EindTijd }}</td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $row->AantalVolwassenen }}</td>
+                                {{ $score->AantalVolwassenen }}</td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $row->AantalKinderen ?? 0 }}</td>
+                                {{ $score->AantalKinderen ?? 0 }}</td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                    <a href="{{ route('score.show', ['id' => $row->id]) }}" class="text-blue-500">SHOW</a>
-                                </td>
+                                <a href="{{ route('score.edit', $score->ReservationId) }}"
+                                    class="text-blue-500">🖊️</a>
+                            </td>
+                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
+                                <a href="{{ route('score.show', $score->ReservationId) }}"
+                                    class="text-blue-500">ⓘ</a>
+                            </td>
+
+
+
                         </tr>
                     @empty
                         <tr>
