@@ -219,6 +219,52 @@ return new class extends Migration
                 ORDER BY t.startTime, c.number;
             END
         ');
+
+        DB::unprepared('
+            DROP PROCEDURE IF EXISTS `GetReserveringOverzicht`;
+            CREATE PROCEDURE GetReserveringOverzicht()
+            BEGIN
+                SELECT 
+                    CONCAT(p.Voornaam, " ", IFNULL(p.Tussenvoegsel, ""), " ", p.Achternaam) AS Naam,
+                    r.Datum AS Reserveringsdatum,
+                    r.AantalUren AS Uren,
+                    r.AantalVolwassen AS Volwassenen,
+                    IFNULL(r.AantalKinderen, 0) AS Kinderen,
+                    r.ReserveringStatus AS Status
+                FROM 
+                    persoon p
+                INNER JOIN 
+                    reservering r
+                ON 
+                    p.id = r.PersoonId
+                ORDER BY 
+                    r.Datum DESC, r.BeginTijd ASC;
+            END
+        ');
+
+        DB::unprepared('
+            DROP PROCEDURE IF EXISTS `GetReserveringDetails`;
+            CREATE PROCEDURE GetReserveringDetails(IN reservering_id INT)
+            BEGIN
+                SELECT 
+                    CONCAT(p.Voornaam, " ", IFNULL(p.Tussenvoegsel, ""), " ", p.Achternaam) AS Naam,
+                    r.Datum AS Reserveringsdatum,
+                    r.AantalVolwassen AS Volwassenen,
+                    IFNULL(r.AantalKinderen, 0) AS Kinderen,
+                    r.BaanId AS BaanNummer,
+                    r.BeginTijd AS Starttijd,
+                    r.EindTijd AS Eindtijd,
+                    r.ReserveringStatus AS Status
+                FROM 
+                    persoon p
+                INNER JOIN 
+                    reservering r
+                ON 
+                    p.id = r.PersoonId
+                WHERE 
+                    r.id = reservering_id;
+            END
+        ');
     }
 
     /**
@@ -235,5 +281,9 @@ return new class extends Migration
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_cancel_reservation`');
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_check_court_availability`');
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date`');
+        DB::unprepared('DROP PROCEDURE IF EXISTS GetReserveringOverzicht');
+        DB::unprepared('DROP PROCEDURE IF EXISTS GetReserveringDetails');
+        // Drop all tables
+        
     }
 };
