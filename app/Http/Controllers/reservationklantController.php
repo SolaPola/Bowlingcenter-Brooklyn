@@ -26,6 +26,7 @@ class ReservationKlantController extends Controller
             // Get all reservations from stored procedure
             $allReservations = DB::select('CALL sp_get_all_reservations()');
             // Filter reservations by date if provided
+            // dd($allReservations);
             
             $reservationsfilter = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$date]);
             // Check if the user is authenticated
@@ -56,7 +57,6 @@ class ReservationKlantController extends Controller
             
            
             return view('reservation_klant.index', compact('reservations', 'date','reservationsfilter'));
-            return view('reservation_klant.index.filter', compact('reservations', 'date'));
         } catch (Exception $e) {
             Log::error('Error in reservation index: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Er is een fout opgetreden bij het ophalen van de reserveringen.');
@@ -105,7 +105,8 @@ class ReservationKlantController extends Controller
                 'courtId' => 'required|exists:court,id',
                 'timeslotId' => 'required|exists:timeslot,id',
                 'date' => 'required|date|after_or_equal:today',
-                'numberOfPeople' => 'required|integer|min:1',
+                'aantalVolwassenen' => 'required|integer|min:1',
+                'AantalKinderen' => 'required|integer|min:1',
                 'minutes' => 'required|integer|min:30',
                 'note' => 'nullable|string|max:255',
             ]);
@@ -134,18 +135,20 @@ class ReservationKlantController extends Controller
                 'date' => $validated['date'],
                 'minutes' => $validated['minutes'],
                 'status' => $status,
-                'numberOfPeople' => $validated['numberOfPeople'],
+                'aantalVolwassenen' => $validated['aantalVolwassenen'],
+                'AantalKinderen' => $validated['AantalKinderen'],
                 'note' => $note
             ]);
 
-            $result = DB::select('CALL sp_create_reservation(?, ?, ?, ?, ?, ?, ?, ?)', [
+            $result = DB::select('CALL sp_create_reservation(?, ?, ?, ?, ?, ?, ?, ?, ?)', [
                 $customerId,
                 $validated['courtId'],
                 $validated['timeslotId'],
                 $validated['date'],
                 $validated['minutes'],
                 $status,
-                $validated['numberOfPeople'],
+                $validated['aantalVolwassenen'],
+                $validated['AantalKinderen'],
                 $note
             ]);
             
@@ -248,8 +251,12 @@ class ReservationKlantController extends Controller
             $validated = $request->validate([
                 'courtId' => 'required|exists:court,id',
                 'timeslotId' => 'required|exists:timeslot,id',
+                'firstName' => 'nullable|string|max:255',
+                'infix' => 'nullable|string|max:255',
+                'lastName' => 'nullable|string|max:255',
                 'date' => 'required|date',
-                'numberOfPeople' => 'required|integer|min:1',
+                'aantalVolwassenen' => 'required|integer|min:1',
+                'AantalKinderen' => 'required|integer|min:1',
                 'minutes' => 'required|integer|min:30',
                 'status' => 'required|string|in:pending,confirmed,canceled,completed',
                 'note' => 'nullable|string|max:255',
@@ -299,14 +306,15 @@ class ReservationKlantController extends Controller
             
             $note = $validated['note'] ?? null;
             
-            $result = DB::select('CALL sp_update_reservation(?, ?, ?, ?, ?, ?, ?, ?)', [
+            $result = DB::select('CALL sp_update_reservation(?, ?, ?, ?, ?, ?, ?, ?, ?)', [
                 $id,
                 $validated['courtId'],
                 $validated['timeslotId'],
                 $validated['date'],
                 $validated['minutes'],
                 $validated['status'],
-                $validated['numberOfPeople'],
+                $validated['aantalVolwassenen'],
+                $validated['AantalKinderen'],
                 $note
             ]);
             
