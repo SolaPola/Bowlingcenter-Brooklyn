@@ -1,12 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-class CreateGetScoreOverviewProcedure extends Migration
+return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         DB::unprepared('
         DROP PROCEDURE IF EXISTS GetScoreOverview;
@@ -34,11 +38,14 @@ class CreateGetScoreOverviewProcedure extends Migration
                 t.endTime,
                 r.numberOfPeople;
         END
-    ');
+        ');
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         DB::unprepared('DROP PROCEDURE IF EXISTS GetScoreOverview');
     }
-}
+};
