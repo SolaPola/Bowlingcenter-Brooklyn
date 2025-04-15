@@ -20,13 +20,7 @@
         </header>
 
         <!-- Create Button -->
-        <div class="flex justify-center mt-6">
-            <a href="{{ route('score.create') }}" class="px-4 py-2 bg-yellow-500 text-white rounded-md">create Score</a>
-        </div>
 
-        <div class="flex justify-center mt-6">
-            <a href="{{ route('score.create') }}" class="px-4 py-2 bg-yellow-500 text-white rounded-md">Edit Score</a>
-        </div>
 
         <!-- Table -->
         <div class="container mx-auto mt-8">
@@ -80,12 +74,10 @@
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
                                 {{ $score->AantalKinderen ?? 0 }}</td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                <a href="{{ route('score.edit', $score->ReservationId) }}"
-                                    class="text-blue-500">🖊️</a>
+                                <a href="{{ route('score.edit', $score->ReservationId) }}" class="text-blue-500">🖊️</a>
                             </td>
                             <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                <a href="{{ route('score.show', $score->ReservationId) }}"
-                                    class="text-blue-500">ⓘ</a>
+                                <a href="{{ route('score.show', $score->ReservationId) }}" class="text-blue-500">ⓘ</a>
                             </td>
 
 
