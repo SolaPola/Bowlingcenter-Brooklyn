@@ -48,23 +48,25 @@ class ScoreController extends Controller
     {
         // Use Eloquent to fetch the record
         $score = Score::findOrFail($id);
-
+        
         return view('score.show', compact('score'));
     }
 
     // Toon het formulier om een score te bewerken
     public function edit($id)
     {
-        $score = DB::table('score')
-            ->join('customer', 'score.id', '=', 'customer.scoreId')
-            ->join('person', 'customer.personId', '=', 'person.id')
-            ->select('score.id', 'person.firstName', 'person.lastName', 'score.amount', 'customer.membershipType')
-            ->where('score.id', $id)
-            ->first();
-
-        return view('score.edit', compact('id', 'score'));
+        $score = DB::select('SELECT id, amount FROM score WHERE id = ?', [$id]);
+        
+        // The DB::select returns an array of objects, so we need to get the first one
+        $score = $score[0] ?? null;
+        
+        if (!$score) {
+            // Handle the case when score is not found
+            return redirect()->route('score.index')->with('error', 'Score not found');
+        }
+        
+        return view('score.edit', compact('score'));
     }
-
     // Werk een bestaande score bij
     public function update(Request $request, $id)
     {
