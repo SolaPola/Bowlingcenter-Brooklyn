@@ -255,9 +255,10 @@ return new class extends Migration
 
         DB::unprepared('
             DROP PROCEDURE IF EXISTS `GetReserveringOverzicht`;
-            CREATE PROCEDURE GetReserveringOverzicht()
+            CREATE PROCEDURE GetReserveringOverzicht(IN p_datum DATE)
             BEGIN
                 SELECT 
+                    r.id, -- Include the reservation ID
                     CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
                     r.date AS Reserveringsdatum,
                     r.minutes AS Uren,
@@ -270,6 +271,8 @@ return new class extends Migration
                     customer cu ON p.id = cu.personId
                 INNER JOIN 
                     reservation r ON cu.id = r.customerId
+                WHERE 
+                    r.date <= p_datum -- Filter by the provided date
                 ORDER BY 
                     r.date DESC, r.createdAt ASC;
             END
@@ -280,6 +283,9 @@ return new class extends Migration
             CREATE PROCEDURE GetReserveringDetails(IN reservering_id INT)
             BEGIN
                 SELECT 
+                    r.id,
+                    r.timeslotId, -- Include the timeslot ID
+                    r.minutes, -- Include the minutes
                     CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
                     r.date AS Reserveringsdatum,
                     r.numberOfPeople AS Volwassenen,
@@ -304,7 +310,7 @@ return new class extends Migration
     }
 
     /**
-     * Reverse the migrations.
+     * Reverse the migrations. 
      */
     public function down(): void
     {

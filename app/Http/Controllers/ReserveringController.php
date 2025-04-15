@@ -11,7 +11,8 @@ class ReserveringController extends Controller
     {
         $datum = $request->get('datum', date('Y-m-d'));
 
-        $reserveringen = DB::select('CALL GetReserveringOverzicht()');
+        // Pass the datum parameter to the stored procedure
+        $reserveringen = DB::select('CALL GetReserveringOverzicht(?)', [$datum]);
 
         return view('reservering.index', compact('reserveringen', 'datum'));
     }
@@ -19,9 +20,11 @@ class ReserveringController extends Controller
     public function wijzigen(Request $request)
     {
         $status = $request->get('status', '');
+        $datum = $request->get('datum', date('Y-m-d')); // Default to today's date if not provided
 
-        $query = 'CALL GetReserveringOverzicht()';
-        $reserveringen = DB::select($query);
+        // Pass the datum parameter to the stored procedure
+        $query = 'CALL GetReserveringOverzicht(?)';
+        $reserveringen = DB::select($query, [$datum]);
 
         if ($status) {
             $reserveringen = array_filter($reserveringen, function ($reservering) use ($status) {
@@ -29,7 +32,7 @@ class ReserveringController extends Controller
             });
         }
 
-        return view('reservering.wijzigen', compact('reserveringen', 'status'));
+        return view('reservering.wijzigen', compact('reserveringen', 'status', 'datum'));
     }
 
 

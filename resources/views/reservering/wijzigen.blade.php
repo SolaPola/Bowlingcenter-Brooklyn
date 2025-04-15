@@ -36,7 +36,9 @@
                     @endif
                     <div class="flex justify-end mb-4">
                         <form method="GET" action="{{ route('reservering.wijzigen') }}">
-                            <label for="status" class="mr-2 text-sm font-medium text-gray-700">Status:</label>
+                            <label for="datum" class="mr-2 text-sm font-medium text-gray-700">Datum:</label>
+                            <input type="date" id="datum" name="datum" value="{{ request('datum', date('Y-m-d')) }}" class="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 px-3 py-2 text-sm">
+                            <label for="status" class="ml-4 mr-2 text-sm font-medium text-gray-700">Status:</label>
                             <select id="status" name="status" class="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 px-3 py-2 text-sm">
                                 <option value="">Alle</option>
                                 <option value="bevestigd" {{ request('status') == 'bevestigd' ? 'selected' : '' }}>Bevestigd</option>
@@ -70,7 +72,11 @@
                                     <td class="py-3 px-6 text-center">{{ $reservering->Kinderen ?? 0 }}</td>
                                     <td class="py-3 px-6 text-center">{{ $reservering->BaanNummer }}</td>
                                     <td class="py-3 px-6 text-center">{{ $reservering->Status }}</td>
-
+                                    <td class="py-3 px-6 text-center">
+                                        <a href="{{ route('editbaan', ['id' => $reservering->id]) }}" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+                                            Wijzig Baan
+                                        </a>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>

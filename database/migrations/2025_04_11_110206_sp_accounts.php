@@ -31,7 +31,8 @@ return new class extends Migration
                         WHEN person.isAdult = 1 THEN 'Ja'
                         ELSE 'Nee'
                     END AS isAdult,
-                    person.id AS personId
+                    person.id AS personId,
+                    DATE_FORMAT(person.createdAt, '%Y-%m-%d') AS createdAt -- Ensure this field is selected and aliased
                 FROM person
                 LEFT JOIN contact ON person.id = contact.personId
                 LEFT JOIN typePerson ON person.typePerson_id = typePerson.id
