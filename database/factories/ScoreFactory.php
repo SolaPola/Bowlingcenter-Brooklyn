@@ -10,6 +10,8 @@ class ScoreFactory extends Factory
 {
     public function definition(): array
     {
+        
+
         return [
             'amount' => fake()->numberBetween(0, 100),
             'isActive' => true,

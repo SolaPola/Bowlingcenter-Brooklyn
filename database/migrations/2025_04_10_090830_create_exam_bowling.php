@@ -82,6 +82,19 @@ return new class extends Migration
             $table->dateTime('updatedAt', 6);
         });
 
+        // Add the missing spel table
+        Schema::create('spel', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->id()->unsigned();
+            $table->foreignId('personId')->constrained('person');
+            $table->foreignId('reservationId')->nullable();
+            
+            $table->boolean('isActive')->default(true);
+            $table->string('note', 255)->nullable();
+            $table->dateTime('createdAt', 6);
+            $table->dateTime('updatedAt', 6);
+        });
+
         Schema::create('customer', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
@@ -135,6 +148,11 @@ return new class extends Migration
             $table->dateTime('updatedAt', 6);
         });
 
+        // Add the constraint for reservationId in spel table after reservation table is created
+        Schema::table('spel', function (Blueprint $table) {
+            $table->foreign('reservationId')->references('id')->on('reservation');
+        });
+
         Schema::create('order', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
@@ -159,7 +177,6 @@ return new class extends Migration
             $table->boolean('IsVolwassen');
             $table->timestamps(6);
         });
-
     }
 
     /**
@@ -169,6 +186,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('order');
         Schema::dropIfExists('reservation');
+        Schema::dropIfExists('spel'); // Add spel to the drop sequence
         Schema::dropIfExists('court');
         Schema::dropIfExists('timeslot');
         Schema::dropIfExists('customer');

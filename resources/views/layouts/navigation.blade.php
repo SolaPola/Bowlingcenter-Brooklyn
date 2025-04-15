@@ -39,6 +39,9 @@
                     <x-nav-link :href="route('accounts.index')" :active="request()->routeIs('accounts.index')">
                         {{ __('Accounts') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('score.index')" :active="request()->routeIs('score.index')">
+                       Score Overview
+                    </x-nav-link>
                 </div>
             </div>
 
