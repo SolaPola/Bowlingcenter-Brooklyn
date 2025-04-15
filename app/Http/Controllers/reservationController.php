@@ -318,6 +318,29 @@ class ReservationController extends Controller
         }
     }
 
+    public function editOptie($id)
+{
+    try {
+        $reservationData = DB::select('CALL sp_get_reservation_by_id(?)', [$id]);
+        
+        if (!$reservationData) {
+            return redirect()->route('reservation.index')
+                           ->with('error', 'Reservering niet gevonden.');
+        }
+        
+        $reservation = $reservationData[0];
+        $courts = Court::where('isActive', true)->get();
+        $timeslots = Timeslot::where('isActive', true)->get();
+        
+        // Je kunt hier een andere view gebruiken als je dat wilt
+        return view('reservation.edit_optie', compact('reservation', 'courts', 'timeslots'));
+    } catch (Exception $e) {
+        Log::error('Error in edit optie form: ' . $e->getMessage());
+        return redirect()->route('reservation.index')
+                       ->with('error', 'Er is een fout opgetreden bij het laden van het formulier.');
+    }
+}
+
     /**
      * Remove the specified reservation from storage.
      */

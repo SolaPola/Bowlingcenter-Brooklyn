@@ -47,7 +47,6 @@
                                 <tbody class="text-gray-800 text-sm font-light">
                                     @foreach ($reservations as $reservation)
                                         <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->customerName }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->date }}</td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->startTime)) }}</td>
                                             <td class="py-3 px-6 text-left">{{ $reservation->courtNumber }}</td>

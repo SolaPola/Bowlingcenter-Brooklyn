@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\AccountController;
@@ -48,6 +47,8 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
         Route::get('/reservations/{id}', [ReservationController::class, 'show'])->name('reservations.show');
         Route::get('/reservations/{id}/edit', [ReservationController::class, 'edit'])->name('reservations.edit');
+        Route::get('/reservations/{id}/edit/optie', [ReservationController::class, 'editOptie'])->name('reservations.edit.optie');
+    
         Route::put('/reservations/{id}', [ReservationController::class, 'update'])->name('reservations.update');
         Route::delete('/reservations/{id}', [ReservationController::class, 'destroy'])->name('reservations.destroy');
 
