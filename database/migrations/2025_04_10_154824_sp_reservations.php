@@ -229,6 +229,7 @@ return new class extends Migration
                     r.date AS Reserveringsdatum,
                     r.minutes AS Uren,
                     r.numberOfPeople AS Volwassenen,
+                    r.courtId AS BaanNummer, -- Ensure this alias matches the expected property
                     r.status AS Status
                 FROM 
                     person p
@@ -249,7 +250,7 @@ return new class extends Migration
                     CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
                     r.date AS Reserveringsdatum,
                     r.numberOfPeople AS Volwassenen,
-                    r.courtId AS BaanNummer,
+                    r.courtId AS BaanNummer, -- Ensure this alias matches the expected property
                     t.startTime AS Starttijd,
                     t.endTime AS Eindtijd,
                     r.status AS Status

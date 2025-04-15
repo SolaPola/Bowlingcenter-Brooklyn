@@ -32,16 +32,6 @@ class ReserveringController extends Controller
         return view('reservering.wijzigen', compact('reserveringen', 'status'));
     }
 
-    public function editBaan($id)
-    {
-        $reservering = DB::select('CALL GetReserveringDetails(?)', [$id]);
-
-        if (empty($reservering)) {
-            return redirect()->route('reservering.wijzigen')->with('error', 'Reservering niet gevonden.');
-        }
-
-        return view('reservering.edit', ['reservering' => $reservering[0]]);
-    }
 
     public function updateBaan(Request $request, $id)
     {
