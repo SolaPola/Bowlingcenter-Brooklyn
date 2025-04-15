@@ -21,9 +21,54 @@ class ReservationFactory extends Factory
             'status' => fake()->randomElement(['In behandeling', 'Betaald', 'geannuleerd']),
             'numberOfPeople' => fake()->numberBetween(1, 6),
             'isActive' => true,
-            'note' => fake()->optional()->sentence(),
             'createdAt' => now(),
             'updatedAt' => now(),
+        ];
+    }
+
+    public function staticReservations(): array
+    {
+        return [
+            [
+                'customerId' => 1,
+                'timeslotId' => 3,
+                'courtId' => 3,
+                'date' => '2025-04-30',
+                'minutes' => 73,
+                'status' => 'Betaald',
+                'numberOfPeople' => 3,
+                'isActive' => true,
+                'note' => null,
+                'createdAt' => '2025-04-15 08:20:16.000000',
+                'updatedAt' => '2025-04-15 08:20:16.000000',
+            ],
+            [
+                'customerId' => 2,
+                'timeslotId' => 2,
+                'courtId' => 8,
+                'date' => '2025-05-16',
+                'minutes' => 110,
+                'status' => 'geannuleerd',
+                'numberOfPeople' => 5,
+                'isActive' => true,
+                'note' => null,
+                'createdAt' => '2025-04-15 08:20:16.000000',
+                'updatedAt' => '2025-04-15 08:20:16.000000',
+            ],
+            // ...add the remaining records here...
+            [
+                'customerId' => 16,
+                'timeslotId' => 7,
+                'courtId' => 2,
+                'date' => '2025-04-02',
+                'minutes' => 64,
+                'status' => 'Betaald',
+                'numberOfPeople' => 1,
+                'isActive' => true,
+                'note' => null,
+                'createdAt' => '2025-04-15 08:20:17.000000',
+                'updatedAt' => '2025-04-15 08:20:17.000000',
+            ],
         ];
     }
 }

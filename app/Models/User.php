@@ -21,6 +21,7 @@ class User extends Authenticatable
         'personId',
         'contactId',
         'username',
+        'email',
         'password',
         'isActive',
         'note',
