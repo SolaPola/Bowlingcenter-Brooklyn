@@ -17,32 +17,15 @@ return new class extends Migration
             DROP PROCEDURE IF EXISTS `sp_get_all_reservations`;
             CREATE PROCEDURE `sp_get_all_reservations`()
             BEGIN
-                 SELECT 
-                    r.id, r.customerId
-                    ,r.timeslotId
-                    ,r.courtId
-                    ,cu.personId
-                    ,r.date 
-                    ,r.minutes
-                    ,r.status
-                    ,r.numberOfPeople 
-                    ,r.AantalVolwassenen
-                    ,r.AantalKinderen
-                    ,r.isActive 
-                    ,r.note
-                    ,r.createdAt
-                    ,r.updatedAt
-                    ,c.number as courtNumber
-                    ,t.startTime, t.endTime
-                    ,p.firstName as firstName
-                    ,p.infix as infix
-                    ,p.lastName as lastName
+                SELECT 
+                    r.id, r.customerId, r.timeslotId, r.courtId, r.date, 
+                    r.minutes, r.status, r.numberOfPeople, r.isActive, 
+                    r.note, r.createdAt, r.updatedAt,
+                    c.number as courtNumber,
+                    t.startTime, t.endTime
                 FROM reservation r
                 JOIN court c ON r.courtId = c.id
                 JOIN timeslot t ON r.timeslotId = t.id
-                join customer cu on cu.id = r.customerId 
-                INNER JOIN person AS p 
-                ON cu.personId = p.id
                 WHERE r.isActive = 1
                 ORDER BY r.date, t.startTime;
             END
@@ -254,63 +237,58 @@ return new class extends Migration
         ');
 
         DB::unprepared('
-            DROP PROCEDURE IF EXISTS `GetReserveringOverzicht`;
-            CREATE PROCEDURE GetReserveringOverzicht(IN p_datum DATE)
-            BEGIN
-                SELECT 
-                    r.id, -- Include the reservation ID
-                    CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
-                    r.date AS Reserveringsdatum,
-                    r.minutes AS Uren,
-                    r.numberOfPeople AS Volwassenen,
-                    r.courtId AS BaanNummer, -- Ensure this alias matches the expected property
-                    r.status AS Status
-                FROM 
-                    person p
-                INNER JOIN 
-                    customer cu ON p.id = cu.personId
-                INNER JOIN 
-                    reservation r ON cu.id = r.customerId
-                WHERE 
-                    r.date <= p_datum -- Filter by the provided date
-                ORDER BY 
-                    r.date DESC, r.createdAt ASC;
-            END
+        DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date_filter`;
+        CREATE PROCEDURE `sp_get_reservations_by_date_filter`(IN reservation_date DATE)
+        BEGIN
+            SELECT 
+                r.id
+                ,r.customerId
+                ,r.timeslotId
+                ,r.courtId
+                ,r.date
+                ,r.minutes
+                ,r.status
+                ,r.numberOfPeople
+                ,r.isActive 
+                ,r.note
+                ,r.createdAt
+                ,r.updatedAt
+                ,c.number as courtNumber
+                ,t.startTime 
+                ,t.endTime
+                ,CONCAT_WS(" ", p.firstName, p.infix, p.lastName) as customerName
+            FROM reservation as r
+
+            INNER JOIN court as c 
+            ON r.courtId = c.id
+
+            INNER JOIN timeslot as t 
+            ON r.timeslotId = t.id
+
+            INNER JOIN customer as cu 
+            ON r.customerId = cu.id
+
+            INNER JOIN `order` as orders
+            ON orders.reservationId = r.id
+
+            INNER JOIN person AS p
+            ON cu.personId = p.id
+            WHERE 
+                -- Match the reservation date
+                r.date >= reservation_date 
+                -- Only include active reservations
+                AND r.isActive = 1
+                -- Exclude canceled reservations
+                AND r.status != "Geannuleerd"
+
+            ORDER BY r.date asc;
+        END
+
         ');
-
-        DB::unprepared('
-            DROP PROCEDURE IF EXISTS `GetReserveringDetails`;
-            CREATE PROCEDURE GetReserveringDetails(IN reservering_id INT)
-            BEGIN
-                SELECT 
-                    r.id,
-                    r.timeslotId, -- Include the timeslot ID
-                    r.minutes, -- Include the minutes
-                    CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
-                    r.date AS Reserveringsdatum,
-                    r.numberOfPeople AS Volwassenen,
-                    r.courtId AS BaanNummer, -- Ensure this alias matches the expected property
-                    t.startTime AS Starttijd,
-                    t.endTime AS Eindtijd,
-                    r.status AS Status
-                FROM 
-                    person p
-                INNER JOIN 
-                    customer cu ON p.id = cu.personId
-                INNER JOIN 
-                    reservation r ON cu.id = r.customerId
-                INNER JOIN 
-                    timeslot t ON r.timeslotId = t.id
-                WHERE 
-                    r.id = reservering_id;
-            END
-        ');
-
-
     }
 
     /**
-     * Reverse the migrations. 
+     * Reverse the migrations.
      */
     public function down(): void
     {
@@ -323,5 +301,6 @@ return new class extends Migration
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_cancel_reservation`');
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_check_court_availability`');
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date`');
+        DB::unprepared('DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date_filter`');
     }
 };

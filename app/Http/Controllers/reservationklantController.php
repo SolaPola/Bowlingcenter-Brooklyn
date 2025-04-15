@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class ReservationController extends Controller
+class ReservationKlantController extends Controller
 {
     /**
      * Display a listing of the reservations.
@@ -20,9 +20,23 @@ class ReservationController extends Controller
     public function index(Request $request)
     {
         try {
+
+             // Haal de datum op uit de request
+            $date = $request->input('date');
             // Get all reservations from stored procedure
             $allReservations = DB::select('CALL sp_get_all_reservations()');
+            // Filter reservations by date if provided
+            // dd($allReservations);
             
+            $reservationsfilter = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$date]);
+            // Check if the user is authenticated
+            if (!$date) {
+                // Haal alle reserveringen op als er geen datum is opgegeven
+                $reservationsfilter = DB::select('CALL sp_get_all_reservations()');
+            } else {
+                // Filter reserveringen op de opgegeven datum
+                $reservationsfilter = DB::select('CALL sp_get_reservations_by_date_filter(?)', [$date]);
+            }
             // Get current page from request query
             $currentPage = $request->input('page', 1);
             
@@ -41,7 +55,8 @@ class ReservationController extends Controller
                 ['path' => $request->url(), 'query' => $request->query()]
             );
             
-            return view('reservation.index', compact('reservations'));
+           
+            return view('reservation_klant.index', compact('reservations', 'date','reservationsfilter'));
         } catch (Exception $e) {
             Log::error('Error in reservation index: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Er is een fout opgetreden bij het ophalen van de reserveringen.');
@@ -59,19 +74,19 @@ class ReservationController extends Controller
             
             // Check if there are available courts and timeslots
             if ($courts->isEmpty()) {
-                return redirect()->route('reservation.index')
+                return redirect()->route('reservation_klant.index')
                                ->with('error', 'Er zijn geen beschikbare banen gevonden.');
             }
             
             if ($timeslots->isEmpty()) {
-                return redirect()->route('reservation.index')
+                return redirect()->route('reservation_klant.index')
                                ->with('error', 'Er zijn geen beschikbare tijdslots gevonden.');
             }
             
-            return view('reservation.create', compact('courts', 'timeslots'));
+            return view('reservation_klant.create', compact('courts', 'timeslots'));
         } catch (Exception $e) {
             Log::error('Error in create form: ' . $e->getMessage());
-            return redirect()->route('reservation.index')
+            return redirect()->route('reservation_klant.index')
                            ->with('error', 'Er is een fout opgetreden bij het laden van het formulier.');
         }
     }
@@ -90,7 +105,8 @@ class ReservationController extends Controller
                 'courtId' => 'required|exists:court,id',
                 'timeslotId' => 'required|exists:timeslot,id',
                 'date' => 'required|date|after_or_equal:today',
-                'numberOfPeople' => 'required|integer|min:1',
+                'aantalVolwassenen' => 'required|integer|min:1',
+                'AantalKinderen' => 'required|integer|min:1',
                 'minutes' => 'required|integer|min:30',
                 'note' => 'nullable|string|max:255',
             ]);
@@ -119,18 +135,20 @@ class ReservationController extends Controller
                 'date' => $validated['date'],
                 'minutes' => $validated['minutes'],
                 'status' => $status,
-                'numberOfPeople' => $validated['numberOfPeople'],
+                'aantalVolwassenen' => $validated['aantalVolwassenen'],
+                'AantalKinderen' => $validated['AantalKinderen'],
                 'note' => $note
             ]);
 
-            $result = DB::select('CALL sp_create_reservation(?, ?, ?, ?, ?, ?, ?, ?)', [
+            $result = DB::select('CALL sp_create_reservation(?, ?, ?, ?, ?, ?, ?, ?, ?)', [
                 $customerId,
                 $validated['courtId'],
                 $validated['timeslotId'],
                 $validated['date'],
                 $validated['minutes'],
                 $status,
-                $validated['numberOfPeople'],
+                $validated['aantalVolwassenen'],
+                $validated['AantalKinderen'],
                 $note
             ]);
             
@@ -139,7 +157,7 @@ class ReservationController extends Controller
             
             if (!empty($result) && isset($result[0]->reservation_id) && $result[0]->reservation_id > 0) {
                 Log::info('New reservation created with ID: ' . $result[0]->reservation_id);
-                return redirect()->route('reservation.show', $result[0]->reservation_id)
+                return redirect()->route('reservation_klant.show', $result[0]->reservation_id)
                               ->with('success', 'Reservering is succesvol aangemaakt.');
             } else {
                 $errorMessage = !empty($result) && isset($result[0]->message) 
@@ -169,7 +187,7 @@ class ReservationController extends Controller
             $reservationData = DB::select('CALL sp_get_reservation_by_id(?)', [$id]);
             
             if (!$reservationData) {
-                return redirect()->route('reservation.index')
+                return redirect()->route('reservation_klant.index')
                                ->with('error', 'Reservering niet gevonden.');
             }
             
@@ -181,10 +199,10 @@ class ReservationController extends Controller
                        ->where('isActive', 1)
                        ->get();
             
-            return view('reservation.show', compact('reservation', 'orders'));
+            return view('reservation_klant.show', compact('reservation', 'orders'));
         } catch (Exception $e) {
             Log::error('Error showing reservation details: ' . $e->getMessage());
-            return redirect()->route('reservations.index')
+            return redirect()->route('reservation_klant.index')
                            ->with('error', 'Er is een fout opgetreden bij het tonen van de reservering.');
         }
     }
@@ -198,7 +216,7 @@ class ReservationController extends Controller
             $reservationData = DB::select('CALL sp_get_reservation_by_id(?)', [$id]);
             
             if (!$reservationData) {
-                return redirect()->route('reservation.index')
+                return redirect()->route('reservation_klant.index')
                                ->with('error', 'Reservering niet gevonden.');
             }
             
@@ -209,14 +227,14 @@ class ReservationController extends Controller
             // Check if there are available courts and timeslots
             if ($courts->isEmpty() || $timeslots->isEmpty()) {
                 Log::warning('No active courts or timeslots available for editing a reservation');
-                return redirect()->route('reservation.index')
+                return redirect()->route('reservation_klant.index')
                                ->with('error', 'Er zijn geen actieve banen of tijdslots beschikbaar.');
             }
             
-            return view('reservation.edit', compact('reservation', 'courts', 'timeslots'));
+            return view('reservation_klant.edit', compact('reservation', 'courts', 'timeslots'));
         } catch (Exception $e) {
             Log::error('Error in edit form: ' . $e->getMessage());
-            return redirect()->route('reservation.index')
+            return redirect()->route('reservation_klant.index')
                            ->with('error', 'Er is een fout opgetreden bij het laden van het formulier.');
         }
     }
@@ -233,8 +251,12 @@ class ReservationController extends Controller
             $validated = $request->validate([
                 'courtId' => 'required|exists:court,id',
                 'timeslotId' => 'required|exists:timeslot,id',
+                'firstName' => 'nullable|string|max:255',
+                'infix' => 'nullable|string|max:255',
+                'lastName' => 'nullable|string|max:255',
                 'date' => 'required|date',
-                'numberOfPeople' => 'required|integer|min:1',
+                'aantalVolwassenen' => 'required|integer|min:1',
+                'AantalKinderen' => 'required|integer|min:1',
                 'minutes' => 'required|integer|min:30',
                 'status' => 'required|string|in:pending,confirmed,canceled,completed',
                 'note' => 'nullable|string|max:255',
@@ -245,13 +267,13 @@ class ReservationController extends Controller
             
             if (empty($existingReservation)) {
                 Log::warning('Attempted to update non-existent reservation with ID: ' . $id);
-                return redirect()->route('reservation.index')
+                return redirect()->route('reservation_klant.index')
                                ->with('error', 'Reservering niet gevonden.');
             }
             
             if (!$existingReservation[0]->isActive) {
                 Log::warning('Attempted to update canceled reservation with ID: ' . $id);
-                return redirect()->route('reservation.index')
+                return redirect()->route('reservation_klant.index')
                                ->with('error', 'Geannuleerde reserveringen kunnen niet worden bijgewerkt.');
             }
             
@@ -284,20 +306,21 @@ class ReservationController extends Controller
             
             $note = $validated['note'] ?? null;
             
-            $result = DB::select('CALL sp_update_reservation(?, ?, ?, ?, ?, ?, ?, ?)', [
+            $result = DB::select('CALL sp_update_reservation(?, ?, ?, ?, ?, ?, ?, ?, ?)', [
                 $id,
                 $validated['courtId'],
                 $validated['timeslotId'],
                 $validated['date'],
                 $validated['minutes'],
                 $validated['status'],
-                $validated['numberOfPeople'],
+                $validated['aantalVolwassenen'],
+                $validated['AantalKinderen'],
                 $note
             ]);
             
             if (!empty($result) && isset($result[0]->reservation_id) && $result[0]->reservation_id > 0) {
                 Log::info('Reservation updated with ID: ' . $id);
-                return redirect()->route('reservation.show', $id)
+                return redirect()->route('reservation_klant.show', $id)
                                ->with('success', 'Reservering is succesvol bijgewerkt.');
             } else {
                 $errorMessage = !empty($result) && isset($result[0]->message) 
@@ -318,29 +341,6 @@ class ReservationController extends Controller
         }
     }
 
-    public function editOptie($id)
-{
-    try {
-        $reservationData = DB::select('CALL sp_get_reservation_by_id(?)', [$id]);
-        
-        if (!$reservationData) {
-            return redirect()->route('reservation.index')
-                           ->with('error', 'Reservering niet gevonden.');
-        }
-        
-        $reservation = $reservationData[0];
-        $courts = Court::where('isActive', true)->get();
-        $timeslots = Timeslot::where('isActive', true)->get();
-        
-        // Je kunt hier een andere view gebruiken als je dat wilt
-        return view('reservation.edit_optie', compact('reservation', 'courts', 'timeslots'));
-    } catch (Exception $e) {
-        Log::error('Error in edit optie form: ' . $e->getMessage());
-        return redirect()->route('reservation.index')
-                       ->with('error', 'Er is een fout opgetreden bij het laden van het formulier.');
-    }
-}
-
     /**
      * Remove the specified reservation from storage.
      */
@@ -350,7 +350,7 @@ class ReservationController extends Controller
             $result = DB::select('CALL sp_cancel_reservation(?)', [$id]);
             
             Log::info('Reservation canceled with ID: ' . $id);
-            return redirect()->route('reservation.index')
+            return redirect()->route('reservation_klant.index')
                            ->with('success', 'De reservering is succesvol geannuleerd.');
         } catch (Exception $e) {
             Log::error('Error canceling reservation: ' . $e->getMessage());
@@ -408,7 +408,7 @@ class ReservationController extends Controller
                 ]);
             }
             
-            return view('reservation.by-date', compact('reservations', 'date'));
+            return view('reservation_klant.by-date', compact('reservations', 'date'));
         } catch (Exception $e) {
             Log::error('Error fetching reservations by date: ' . $e->getMessage());
             

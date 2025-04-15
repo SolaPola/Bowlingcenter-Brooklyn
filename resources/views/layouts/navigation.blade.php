@@ -15,11 +15,14 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reservering.index')" :active="request()->routeIs('reservering.index')">
-                        {{ __('Bevestigde Reservering') }}
+                    <x-nav-link :href="route('order.index')" :active="request()->routeIs('order.index')">
+                        Order Overview
                     </x-nav-link>
-                    <x-nav-link :href="route('reservering.wijzigen')" :active="request()->routeIs('reservering.wijzigen')">
-                        {{ __('Bevestigde Baan ') }}
+                    <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')">
+                        {{ __('Reserveren') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('reservation_klant.index')" :active="request()->routeIs('reservations.*')">
+                        {{ __('Reserveren klant') }}
                     </x-nav-link>
 
 
