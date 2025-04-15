@@ -144,6 +144,36 @@ return new class extends Migration
             $table->dateTime('createdAt', 6);
             $table->dateTime('updatedAt', 6);
         });
+
+        Schema::create('persoon', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->id()->unsigned();
+            $table->string('TypePersoon', 20);
+            $table->string('Voornaam', 50);
+            $table->string('Tussenvoegsel', 20)->nullable();
+            $table->string('Achternaam', 50);
+            $table->string('Roepnaam', 50)->nullable();
+            $table->boolean('IsVolwassen');
+            $table->timestamps(6);
+        });
+
+        Schema::create('reservering', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->id()->unsigned();
+            $table->foreignId('PersoonId')->constrained('persoon');
+            $table->foreignId('OpeningstijdId'); // Add foreign key constraint if applicable
+            $table->foreignId('BaanId'); // Add foreign key constraint if applicable
+            $table->integer('PakketOptieId')->nullable();
+            $table->string('ReserveringStatus', 20);
+            $table->string('Reserveringsnummer', 20);
+            $table->date('Datum');
+            $table->integer('AantalUren');
+            $table->time('BeginTijd');
+            $table->time('EindTijd');
+            $table->integer('AantalVolwassen');
+            $table->integer('AantalKinderen')->nullable();
+            $table->timestamps(6);
+        });
     }
 
     /**
@@ -162,5 +192,7 @@ return new class extends Migration
         Schema::dropIfExists('contact');
         Schema::dropIfExists('person');
         Schema::dropIfExists('typePerson');
+        Schema::dropIfExists('persoon');
+        Schema::dropIfExists('reservering');
     }
 };
