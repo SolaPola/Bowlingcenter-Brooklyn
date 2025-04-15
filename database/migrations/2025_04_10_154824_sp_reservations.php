@@ -222,7 +222,7 @@ return new class extends Migration
 
         DB::unprepared('
             DROP PROCEDURE IF EXISTS `GetReserveringOverzicht`;
-            CREATE PROCEDURE GetReserveringOverzicht()
+            CREATE PROCEDURE GetReserveringOverzicht(IN p_datum DATE)
             BEGIN
                 SELECT 
                     CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
@@ -237,6 +237,8 @@ return new class extends Migration
                     customer cu ON p.id = cu.personId
                 INNER JOIN 
                     reservation r ON cu.id = r.customerId
+                WHERE 
+                    r.date <= p_datum -- Filter by the provided date
                 ORDER BY 
                     r.date DESC, r.createdAt ASC;
             END

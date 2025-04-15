@@ -11,7 +11,8 @@ class ReserveringController extends Controller
     {
         $datum = $request->get('datum', date('Y-m-d'));
 
-        $reserveringen = DB::select('CALL GetReserveringOverzicht()');
+        // Pass the datum parameter to the stored procedure
+        $reserveringen = DB::select('CALL GetReserveringOverzicht(?)', [$datum]);
 
         return view('reservering.index', compact('reserveringen', 'datum'));
     }
