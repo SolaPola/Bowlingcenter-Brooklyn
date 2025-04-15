@@ -19,74 +19,74 @@
             </div>
         </header>
 
-        <!-- Create Button -->
-
-
         <!-- Table -->
         <div class="container mx-auto mt-8">
-            <table class="table-auto w-full border-collapse border border-gray-300">
+            <table class="table-auto w-full border-collapse border border-gray-300 bg-white">
                 <thead>
-                    <tr class="bg-gray-100">
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Naam</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Datum</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Aantal Uren</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Begintijd</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Eindtijd</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Aantal Volwassenen</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Aantal Kinderen</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Wijzigen</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Score punten</th>
+                    <tr class="bg-gray-200">
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Naam
+                        </th>
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Datum
+                        </th>
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Aantal Uren
+                        </th>
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Begintijd
+                        </th>
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Eindtijd
+                        </th>
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Aantal Volwassenen
+                        </th>
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Aantal Kinderen
+                        </th>
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Wijzigen
+                        </th>
+                        <th class="px-4 py-2 border-b-2 border-r border-gray-300 text-gray-800 text-left leading-4 tracking-wider">
+                            Score punten
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse ($scoreOverview as $score)
-                        <tr>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $score->Naam }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $score->Datum }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $score->AantalUren }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $score->BeginTijd }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $score->EindTijd }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $score->AantalVolwassenen }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $score->AantalKinderen ?? 0 }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                <a href="{{ route('score.edit', $score->ReservationId) }}" class="text-blue-500">🖊️</a>
+                    @forelse ($scores as $score)
+                        <tr class="hover:bg-gray-100">
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                {{ $score->Naam }}
                             </td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                <a href="{{ route('score.show', $score->ReservationId) }}" class="text-blue-500">ⓘ</a>
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                {{ $score->Datum }}
                             </td>
-
-
-
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                {{ $score->AantalUren }}
+                            </td>
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                {{ $score->BeginTijd }}
+                            </td>
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                {{ $score->EindTijd }}
+                            </td>
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                {{ $score->AantalVolwassenen }}
+                            </td>
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                {{ $score->AantalKinderen ?? 0 }}
+                            </td>
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                <a href="{{ route('score.edit', $score->ReservationId) }}" class="text-blue-600 hover:text-blue-800">🖊️</a>
+                            </td>
+                            <td class="px-4 py-2 border-b border-r border-gray-300 text-gray-800">
+                                <a href="{{ route('score.show', $score->ReservationId) }}" class="text-blue-600 hover:text-blue-800">ⓘ</a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8"
-                                class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700 text-center text-red-500">
+                            <td colspan="9" class="px-4 py-2 border-b border-r border-gray-300 text-center text-red-600 bg-white">
                                 No Scores Available
                             </td>
                         </tr>
