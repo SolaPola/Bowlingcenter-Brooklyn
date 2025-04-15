@@ -1,29 +1,43 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Score</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800">
 
-@section('content')
-<div class="container">
-    <h1>Edit Score</h1>
-    <form action="{{ route('score.update', $score->id) }}" method="POST">
-        @csrf
-        @method('PUT')
-
-        <div class="form-group">
-            <label for="player_name">Player Name</label>
-            <input type="text" name="player_name" id="player_name" class="form-control" value="{{ old('player_name', $score->player_name) }}" required>
+    <header class="bg-yellow-400 shadow">
+        <div class="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-gray-900">Edit Score</h1>
         </div>
+    </header>
 
-        <div class="form-group">
-            <label for="score">Score</label>
-            <input type="number" name="score" id="score" class="form-control" value="{{ old('score', $score->score) }}" required>
-        </div>
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <form action="{{ route('score.update', $id) }}" method="POST" class="space-y-4">
+            @csrf
+            @method('PUT')
+            <div>
+                <label for="firstName" class="block text-sm font-medium">First Name</label>
+                <input type="text" id="firstName" name="firstName" value="{{ old('firstName', $score->firstName) }}" class="w-full border-gray-300 rounded-md shadow-sm">
+            </div>
+            <div>
+                <label for="lastName" class="block text-sm font-medium">Last Name</label>
+                <input type="text" id="lastName" name="lastName" value="{{ old('lastName', $score->lastName) }}" class="w-full border-gray-300 rounded-md shadow-sm">
+            </div>
+            <div>
+                <label for="amount" class="block text-sm font-medium">Score</label>
+                <input type="number" id="amount" name="amount" value="{{ old('amount', $score->amount) }}" class="w-full border-gray-300 rounded-md shadow-sm">
+            </div>
+            <div>
+                <label for="membershipType" class="block text-sm font-medium">Membership Type</label>
+                <input type="text" id="membershipType" name="membershipType" value="{{ old('membershipType', $score->membershipType) }}" class="w-full border-gray-300 rounded-md shadow-sm">
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="bg-yellow-400 text-gray-900 px-4 py-2 rounded-md shadow">Update</button>
+            </div>
+        </form>
+    </main>
 
-        <div class="form-group">
-            <label for="game_date">Game Date</label>
-            <input type="date" name="game_date" id="game_date" class="form-control" value="{{ old('game_date', $score->game_date) }}" required>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Update Score</button>
-        <a href="{{ route('score.index') }}" class="btn btn-secondary">Cancel</a>
-    </form>
-</div>
-@endsection
+</body>
+</html>
