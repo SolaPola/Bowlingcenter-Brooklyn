@@ -225,20 +225,19 @@ return new class extends Migration
             CREATE PROCEDURE GetReserveringOverzicht()
             BEGIN
                 SELECT 
-                    CONCAT(p.Voornaam, " ", IFNULL(p.Tussenvoegsel, ""), " ", p.Achternaam) AS Naam,
-                    r.Datum AS Reserveringsdatum,
-                    r.AantalUren AS Uren,
-                    r.AantalVolwassen AS Volwassenen,
-                    IFNULL(r.AantalKinderen, 0) AS Kinderen,
-                    r.ReserveringStatus AS Status
+                    CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
+                    r.date AS Reserveringsdatum,
+                    r.minutes AS Uren,
+                    r.numberOfPeople AS Volwassenen,
+                    r.status AS Status
                 FROM 
-                    persoon p
+                    person p
                 INNER JOIN 
-                    reservering r
-                ON 
-                    p.id = r.PersoonId
+                    customer cu ON p.id = cu.personId
+                INNER JOIN 
+                    reservation r ON cu.id = r.customerId
                 ORDER BY 
-                    r.Datum DESC, r.BeginTijd ASC;
+                    r.date DESC, r.createdAt ASC;
             END
         ');
 
@@ -247,20 +246,21 @@ return new class extends Migration
             CREATE PROCEDURE GetReserveringDetails(IN reservering_id INT)
             BEGIN
                 SELECT 
-                    CONCAT(p.Voornaam, " ", IFNULL(p.Tussenvoegsel, ""), " ", p.Achternaam) AS Naam,
-                    r.Datum AS Reserveringsdatum,
-                    r.AantalVolwassen AS Volwassenen,
-                    IFNULL(r.AantalKinderen, 0) AS Kinderen,
-                    r.BaanId AS BaanNummer,
-                    r.BeginTijd AS Starttijd,
-                    r.EindTijd AS Eindtijd,
-                    r.ReserveringStatus AS Status
+                    CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
+                    r.date AS Reserveringsdatum,
+                    r.numberOfPeople AS Volwassenen,
+                    r.courtId AS BaanNummer,
+                    t.startTime AS Starttijd,
+                    t.endTime AS Eindtijd,
+                    r.status AS Status
                 FROM 
-                    persoon p
+                    person p
                 INNER JOIN 
-                    reservering r
-                ON 
-                    p.id = r.PersoonId
+                    customer cu ON p.id = cu.personId
+                INNER JOIN 
+                    reservation r ON cu.id = r.customerId
+                INNER JOIN 
+                    timeslot t ON r.timeslotId = t.id
                 WHERE 
                     r.id = reservering_id;
             END

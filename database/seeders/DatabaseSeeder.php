@@ -283,5 +283,11 @@ class DatabaseSeeder extends Seeder
                 $attempt++;
             }
         }
+
+        // Seed static reservations
+        $staticReservations = (new \Database\Factories\ReservationFactory())->staticReservations();
+        foreach ($staticReservations as $reservationData) {
+            Reservation::create($reservationData);
+        }
     }
 }

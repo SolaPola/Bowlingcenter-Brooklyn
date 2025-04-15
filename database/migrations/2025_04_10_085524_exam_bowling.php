@@ -157,23 +157,6 @@ return new class extends Migration
             $table->timestamps(6);
         });
 
-        Schema::create('reservering', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->id()->unsigned();
-            $table->foreignId('PersoonId')->constrained('persoon');
-            $table->foreignId('OpeningstijdId'); // Add foreign key constraint if applicable
-            $table->foreignId('BaanId'); // Add foreign key constraint if applicable
-            $table->integer('PakketOptieId')->nullable();
-            $table->string('ReserveringStatus', 20);
-            $table->string('Reserveringsnummer', 20);
-            $table->date('Datum');
-            $table->integer('AantalUren');
-            $table->time('BeginTijd');
-            $table->time('EindTijd');
-            $table->integer('AantalVolwassen');
-            $table->integer('AantalKinderen')->nullable();
-            $table->timestamps(6);
-        });
     }
 
     /**
