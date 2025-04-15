@@ -237,6 +237,53 @@ return new class extends Migration
         ');
 
         DB::unprepared('
+            DROP PROCEDURE IF EXISTS `GetReserveringOverzicht`;
+            CREATE PROCEDURE GetReserveringOverzicht()
+            BEGIN
+                SELECT 
+                    CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
+                    r.date AS Reserveringsdatum,
+                    r.minutes AS Uren,
+                    r.numberOfPeople AS Volwassenen,
+                    r.courtId AS BaanNummer, -- Ensure this alias matches the expected property
+                    r.status AS Status
+                FROM 
+                    person p
+                INNER JOIN 
+                    customer cu ON p.id = cu.personId
+                INNER JOIN 
+                    reservation r ON cu.id = r.customerId
+                ORDER BY 
+                    r.date DESC, r.createdAt ASC;
+            END
+        ');
+
+        DB::unprepared('
+            DROP PROCEDURE IF EXISTS `GetReserveringDetails`;
+            CREATE PROCEDURE GetReserveringDetails(IN reservering_id INT)
+            BEGIN
+                SELECT 
+                    CONCAT(p.firstName, " ", IFNULL(p.infix, ""), " ", p.lastName) AS Naam,
+                    r.date AS Reserveringsdatum,
+                    r.numberOfPeople AS Volwassenen,
+                    r.courtId AS BaanNummer, -- Ensure this alias matches the expected property
+                    t.startTime AS Starttijd,
+                    t.endTime AS Eindtijd,
+                    r.status AS Status
+                FROM 
+                    person p
+                INNER JOIN 
+                    customer cu ON p.id = cu.personId
+                INNER JOIN 
+                    reservation r ON cu.id = r.customerId
+                INNER JOIN 
+                    timeslot t ON r.timeslotId = t.id
+                WHERE 
+                    r.id = reservering_id;
+            END
+        ');
+
+        DB::unprepared('
         DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date_filter`;
         CREATE PROCEDURE `sp_get_reservations_by_date_filter`(IN reservation_date DATE)
         BEGIN
@@ -301,6 +348,5 @@ return new class extends Migration
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_cancel_reservation`');
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_check_court_availability`');
         DB::unprepared('DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date`');
-        DB::unprepared('DROP PROCEDURE IF EXISTS `sp_get_reservations_by_date_filter`');
     }
 };
