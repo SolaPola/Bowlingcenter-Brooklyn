@@ -2,41 +2,60 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ReserveringController extends Controller
 {
     public function index(Request $request)
     {
-        $datum = $request->input('datum') ?? date('Y-m-d'); // Gebruik de huidige datum als standaard
+        $datum = $request->get('datum', date('Y-m-d'));
 
-        // Haal gegevens op via de stored procedure
-        $query = 'CALL GetReserveringOverzicht()';
-        $reserveringen = DB::select($query);
+        $reserveringen = DB::select('CALL GetReserveringOverzicht()');
 
-        // Filter resultaten op datum als een datum is opgegeven
-        if ($datum) {
-            $reserveringen = array_filter($reserveringen, function ($reservering) use ($datum) {
-                return $reservering->Datum <= $datum;
-            });
-
-            // Sorteer de resultaten aflopend op datum
-            usort($reserveringen, function ($a, $b) {
-                return strcmp($b->Datum, $a->Datum);
-            });
-        }
-
-        // Geef de gegevens door aan de view
         return view('reservering.index', compact('reserveringen', 'datum'));
     }
 
-    public function wijzigen()
+    public function wijzigen(Request $request)
     {
-        // Haal gegevens op via de stored procedure
-        $reserveringen = DB::select('CALL GetReserveringDetails()');
+        $status = $request->get('status', '');
 
-        // Geef de gegevens door aan de view
-        return view('reservering.wijzigen', compact('reserveringen'));
+        $query = 'CALL GetReserveringOverzicht()';
+        $reserveringen = DB::select($query);
+
+        if ($status) {
+            $reserveringen = array_filter($reserveringen, function ($reservering) use ($status) {
+                return strtolower($reservering->Status) === strtolower($status);
+            });
+        }
+
+        return view('reservering.wijzigen', compact('reserveringen', 'status'));
+    }
+
+    public function editBaan($id)
+    {
+        $reservering = DB::select('CALL GetReserveringDetails(?)', [$id]);
+
+        if (empty($reservering)) {
+            return redirect()->route('reservering.wijzigen')->with('error', 'Reservering niet gevonden.');
+        }
+
+        return view('reservering.edit', ['reservering' => $reservering[0]]);
+    }
+
+    public function updateBaan(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'courtId' => 'required|integer',
+            'status' => 'required|string|max:50',
+        ]);
+
+        DB::statement('CALL sp_update_reservation(?, ?, NULL, NULL, NULL, ?, NULL, NULL)', [
+            $id,
+            $validated['courtId'],
+            $validated['status'],
+        ]);
+
+        return redirect()->route('reservering.wijzigen')->with('success', 'Reservering succesvol bijgewerkt.');
     }
 }

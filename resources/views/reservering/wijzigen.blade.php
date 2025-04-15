@@ -1,4 +1,3 @@
-
 <x-app-layout>
 <x-slot name="header">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
@@ -35,6 +34,19 @@
                             {{ session('error') }}
                         </div>
                     @endif
+                    <div class="flex justify-end mb-4">
+                        <form method="GET" action="{{ route('reservering.wijzigen') }}">
+                            <label for="status" class="mr-2 text-sm font-medium text-gray-700">Status:</label>
+                            <select id="status" name="status" class="border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-200 focus:border-blue-300 px-3 py-2 text-sm">
+                                <option value="">Alle</option>
+                                <option value="bevestigd" {{ request('status') == 'bevestigd' ? 'selected' : '' }}>Bevestigd</option>
+                                <option value="geannuleerd" {{ request('status') == 'geannuleerd' ? 'selected' : '' }}>Geannuleerd</option>
+                            </select>
+                            <button type="submit" class="ml-4 bg-blue-500 text-black px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
+                                Filteren
+                            </button>
+                        </form>
+                    </div>
                     <table class="min-w-full table-auto">
                         <thead>
                             <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">
@@ -43,6 +55,7 @@
                                 <th class="py-4 px-6 text-center">Volwassen</th>
                                 <th class="py-4 px-6 text-center">Kinderen</th>
                                 <th class="py-4 px-6 text-center">Baan ID</th>
+                                <th class="py-4 px-6 text-center">Status</th>
                                 <th class="py-4 px-6 text-center">Wijzigen</th>
                             </tr>
                         </thead>
@@ -56,6 +69,7 @@
                                     <td class="py-3 px-6 text-center">{{ $reservering->AantalVolwassen }}</td>
                                     <td class="py-3 px-6 text-center">{{ $reservering->AantalKinderen ?? 0 }}</td>
                                     <td class="py-3 px-6 text-center">{{ $reservering->BaanId }}</td>
+                                    <td class="py-3 px-6 text-center">{{ $reservering->Status }}</td>
                                     <td class="py-3 px-6 text-center">
                                         <a href="{{ route('editbaan', ['id' => $reservering->BaanId]) }}" class="text-blue-500 hover:underline">
                                             ✎
@@ -64,7 +78,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="py-3 px-6 text-center text-gray-500">
+                                    <td colspan="7" class="py-3 px-6 text-center text-gray-500">
                                         Geen reserveringen gevonden.
                                     </td>
                                 </tr>

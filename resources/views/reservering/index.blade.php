@@ -49,11 +49,11 @@
                                         <td class="py-3 px-6 text-left whitespace-nowrap font-medium">
                                             {{ $reservering->Naam }}
                                         </td>
-                                        <td class="py-3 px-6 text-left">{{ $reservering->Datum }}</td>
-                                        <td class="py-3 px-6 text-left">{{ $reservering->AantalUren }}</td>
-                                        <td class="py-3 px-6 text-center">{{ $reservering->AantalVolwassen }}</td>
-                                        <td class="py-3 px-6 text-center">{{ $reservering->AantalKinderen ?? 0 }}</td>
-                                        <td class="py-3 px-6 text-center">{{ $reservering->ReserveringStatus }}</td>
+                                        <td class="py-3 px-6 text-left">{{ $reservering->Reserveringsdatum }}</td>
+                                        <td class="py-3 px-6 text-left">{{ $reservering->Uren }}</td>
+                                        <td class="py-3 px-6 text-center">{{ $reservering->Volwassenen }}</td>
+                                        <td class="py-3 px-6 text-center">{{ $reservering->Kinderen ?? 0 }}</td>
+                                        <td class="py-3 px-6 text-center">{{ $reservering->Status }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
