@@ -16,10 +16,10 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('reservering.index')" :active="request()->routeIs('reservering.index')">
-                        {{ __('Overzicht Bevestigde Reservering') }}
+                        {{ __('Overzicht  Reservering') }}
                     </x-nav-link>
                     <x-nav-link :href="route('reservering.wijzigen')" :active="request()->routeIs('reservering.wijzigen')">
-                        {{ __('Bestaand Baan Wijzigen') }}
+                        {{ __('overzicht Baan ') }}
                     </x-nav-link>
 
 
