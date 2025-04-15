@@ -13,6 +13,7 @@ use App\Models\Court;
 use App\Models\Timeslot;
 use App\Models\Reservation;
 use App\Models\Order;
+use App\Models\Spel;
 use App\Models\TypePerson;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -32,27 +33,27 @@ class DatabaseSeeder extends Seeder
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
-        
+
         $gastType = TypePerson::create([
             'naam' => 'Gast',
             'isActive' => true,
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
-        
+
         $medewerkerType = TypePerson::create([
             'naam' => 'Medewerker',
             'isActive' => true,
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
-        
+
         // Create contacts first - these will include our supplier contacts
         $contacts = Contact::factory(5)->create();
-        
+
         // Create only the explicitly defined people
         $people = [];
-        
+
         // Create admin person with typePerson_id
         $adminPerson = Person::create([
             'typePerson_id' => $medewerkerType->id,
@@ -63,7 +64,7 @@ class DatabaseSeeder extends Seeder
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
-        
+
         // Add a test employee
         $employeePerson = Person::create([
             'typePerson_id' => $medewerkerType->id,
@@ -74,7 +75,7 @@ class DatabaseSeeder extends Seeder
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
-        
+
         // Add a test customer
         $customerPerson = Person::create([
             'typePerson_id' => $klantType->id,
@@ -85,7 +86,7 @@ class DatabaseSeeder extends Seeder
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
-        
+
         // Add a test guest
         $guestPerson = Person::create([
             'typePerson_id' => $gastType->id,
@@ -96,22 +97,22 @@ class DatabaseSeeder extends Seeder
             'createdAt' => now(),
             'updatedAt' => now(),
         ]);
-        
+
         // Group people by type for later use
         $supplierPeople = [$employeePerson, $adminPerson];
         $customerPeople = [$customerPerson];
         $guestPeople = [$guestPerson];
         $people = array_merge($supplierPeople, $customerPeople, $guestPeople);
-        
+
         // Create admin user
         $adminUser = User::create([
             'name' => 'AdminUser',
-            'email' => 'admin@example.com', 
+            'email' => 'admin@example.com',
             'password' => Hash::make('Admin1234'),
             'created_At' => now(),
             'updated_At' => now(),
         ]);
-        
+
         // Create test user with first person and contact
         $testPerson = $employeePerson;
         $testContact = $contacts[0];
@@ -150,7 +151,7 @@ class DatabaseSeeder extends Seeder
         foreach ($customerPeople as $person) {
             // Create a score for this customer
             $score = Score::factory()->create();
-            
+
             Customer::factory()->create([
                 'personId' => $person->id,
                 'scoreId' => $score->id,
@@ -282,6 +283,35 @@ class DatabaseSeeder extends Seeder
 
                 $attempt++;
             }
+        }
+
+        // After creating all reservations, create spel records
+        $allReservations = Reservation::all();
+        $allPeople = Person::all();
+
+        // Create at least one spel record for each reservation
+        foreach ($allReservations as $reservation) {
+            // Create 1-4 spel records per reservation (people playing)
+            $spelCount = fake()->numberBetween(1, 4);
+
+            for ($i = 0; $i < $spelCount; $i++) {
+                // Randomly select a person
+                $randomPerson = $allPeople->random();
+
+                Spel::create([
+                    'personId' => $randomPerson->id,
+                    'reservationId' => $reservation->id,
+                    'isActive' => true,
+                    'note' => fake()->boolean(20) ? fake()->sentence() : null, // 20% chance of having a note
+                    'createdAt' => now(),
+                    'updatedAt' => now(),
+                ]);
+            }
+        }
+
+        // Create some standalone spel records
+        for ($i = 0; $i < 10; $i++) {
+            Spel::factory()->create();
         }
 
         // Seed static reservations
