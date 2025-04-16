@@ -11,7 +11,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\ScoreController;
 use App\Http\Controllers\ReservationklantController;
 
 
