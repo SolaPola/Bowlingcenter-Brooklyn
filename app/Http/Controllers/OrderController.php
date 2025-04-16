@@ -18,6 +18,11 @@ class OrderController extends Controller
         return view('order.create');
     }
 
+    public function edit($id)
+    {
+        $order = Order::findOrFail($id);
+        return view('order.edit', compact('order'));
+    }
 
     public function destroy($id)
     {
