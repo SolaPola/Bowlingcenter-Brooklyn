@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Models\Person;
+use App\Models\Employee;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
-use App\Models\Score;
 
-class ScoreFactory extends Factory
+class EmployeeFactory extends Factory
 {
     public function definition(): array
     {
-        
-
         return [
-            'amount' => fake()->numberBetween(0, 100),
+            'personId' => Person::factory(),
+            'function' => fake()->jobTitle(),
+            'department' => fake()->company(),
             'isActive' => true,
             'note' => fake()->optional()->sentence(),
             'createdAt' => now(),

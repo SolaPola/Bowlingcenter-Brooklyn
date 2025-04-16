@@ -11,25 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('typePerson', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->id()->unsigned();
-            $table->string('naam', 100);
-            $table->boolean('isActive')->default(true);
-            $table->string('note', 255)->nullable();
-            $table->dateTime('createdAt', 6);
-            $table->dateTime('updatedAt', 6);
-        });
-
         Schema::create('person', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('typePerson_id')->nullable()->constrained('typePerson'); // Make it nullable
             $table->string('firstName', 100);
             $table->string('infix', 50)->nullable();
             $table->string('lastName', 100);
-            $table->string('nickname', 50)->nullable();
-            $table->boolean('isAdult');
+            $table->string('callname')->nullable();
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
@@ -39,7 +27,6 @@ return new class extends Migration
         Schema::create('contact', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
-            $table->foreignId('personId')->constrained('person');
             $table->string('email', 255)->unique();
             $table->string('phoneNumber', 15)->nullable();
             $table->string('address', 255)->nullable();
@@ -76,19 +63,6 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->id()->unsigned();
             $table->integer('amount', false, true)->length(20);
-            $table->boolean('isActive')->default(true);
-            $table->string('note', 255)->nullable();
-            $table->dateTime('createdAt', 6);
-            $table->dateTime('updatedAt', 6);
-        });
-
-        // Add the missing spel table
-        Schema::create('spel', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->id()->unsigned();
-            $table->foreignId('personId')->constrained('person');
-            $table->foreignId('reservationId')->nullable();
-            
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
@@ -140,17 +114,10 @@ return new class extends Migration
             $table->integer('minutes');
             $table->string('status', 50);
             $table->integer('numberOfPeople')->nullable();
-            $table->integer('AantalVolwassenen')->nullable();
-            $table->integer('AantalKinderen')->nullable();
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
             $table->dateTime('updatedAt', 6);
-        });
-
-        // Add the constraint for reservationId in spel table after reservation table is created
-        Schema::table('spel', function (Blueprint $table) {
-            $table->foreign('reservationId')->references('id')->on('reservation');
         });
 
         Schema::create('order', function (Blueprint $table) {
@@ -159,23 +126,11 @@ return new class extends Migration
             $table->foreignId('reservationId')->constrained('reservation');
             $table->integer('orderNumber');
             $table->date('orderDate');
-            $table->string('packageType');
+            $table->string('packageType',);
             $table->boolean('isActive')->default(true);
             $table->string('note', 255)->nullable();
             $table->dateTime('createdAt', 6);
             $table->dateTime('updatedAt', 6);
-        });
-
-        Schema::create('persoon', function (Blueprint $table) {
-            $table->engine = 'InnoDB';
-            $table->id()->unsigned();
-            $table->string('TypePersoon', 20);
-            $table->string('Voornaam', 50);
-            $table->string('Tussenvoegsel', 20)->nullable();
-            $table->string('Achternaam', 50);
-            $table->string('Roepnaam', 50)->nullable();
-            $table->boolean('IsVolwassen');
-            $table->timestamps(6);
         });
     }
 
@@ -186,17 +141,14 @@ return new class extends Migration
     {
         Schema::dropIfExists('order');
         Schema::dropIfExists('reservation');
-        Schema::dropIfExists('spel'); // Add spel to the drop sequence
         Schema::dropIfExists('court');
         Schema::dropIfExists('timeslot');
         Schema::dropIfExists('customer');
         Schema::dropIfExists('score');
         Schema::dropIfExists('employee');
         Schema::dropIfExists('role');
+        // Schema::dropIfExists('users');
         Schema::dropIfExists('contact');
         Schema::dropIfExists('person');
-        Schema::dropIfExists('typePerson');
-        Schema::dropIfExists('persoon');
-        Schema::dropIfExists('reservering');
     }
 };

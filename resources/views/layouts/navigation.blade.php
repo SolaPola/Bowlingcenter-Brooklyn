@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-yellow-400 border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -15,29 +15,23 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reservering.index')" :active="request()->routeIs('reservering.index')">
-                        {{ __('Bevestigde Reservering') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('reservering.wijzigen')" :active="request()->routeIs('reservering.wijzigen')">
-                        {{ __('Bevestigde Baan ') }}
-                    </x-nav-link>
-
-
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                        {{ __('gebruikers') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('order.index')" :active="request()->routeIs('order.index')">
                         {{ __('Bestellingen') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.index')">
-                        {{ __('Reserveren') }}
+                    <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')">
+                        {{ __('Reserveren Praktijk') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('reservation_klant.index')" :active="request()->routeIs('reservations.*')">
+                        {{ __('Reserveren Klant') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                        {{ __('gebruikers') }}
                     </x-nav-link>
                     <x-nav-link :href="route('accounts.index')" :active="request()->routeIs('accounts.index')">
                         {{ __('Accounts') }}
                     </x-nav-link>
                     <x-nav-link :href="route('score.index')" :active="request()->routeIs('score.index')">
-                       Score Overview
+                        {{ __('score overzicht') }}
                     </x-nav-link>
                 </div>
             </div>

@@ -7,16 +7,7 @@
             <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                 <form action="{{ route('accounts.index') }}" method="GET" class="flex items-center space-x-4">
                     <div class="flex items-center space-x-4 bg-white p-2 rounded-lg shadow-md">
-                        <input type="text" 
-                               name="start_date" 
-                               class="rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" 
-                               placeholder="Kies startdatum"
-                               value="{{ request('start_date') }}"
-                               id="start_date">
-                        
-                        <span class="text-gray-500 font-medium">tot</span>
-                        
-                        <input type="text" 
+                       <input type="text" 
                                name="end_date" 
                                class="rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" 
                                placeholder="Kies einddatum"
@@ -78,6 +69,7 @@
                                     <th class="py-4 px-6 text-left">Mobiel</th>
                                     <th class="py-4 px-6 text-left">E-mail</th>
                                     <th class="py-4 px-6 text-center">Volwassen</th>
+                                    <th class="py-4 px-6 text-center">Datum</th>
                                     <th class="py-4 px-6 text-center">Wijzigen</th>
                                 </tr>
                             </thead>
@@ -89,6 +81,7 @@
                                         <td class="py-3 px-6 text-left">{{ $account->mobileNumber ?? 'N/A' }}</td>
                                         <td class="py-3 px-6 text-left">{{ $account->emailAddress }}</td>
                                         <td class="py-3 px-6 text-center">{{ $account->isAdult }}</td>
+                                        <td class="py-3 px-6 text-center">{{ $account->createdAt ?? 'N/A' }}</td> <!-- Ensure this field is accessed -->
                                         <td class="py-3 px-6 text-center">
                                             <a href="{{ route('accounts.show', $account->personId) }}" 
                                             class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
@@ -97,7 +90,7 @@
                                     @endforeach
                                 @else
                                     <tr class="border-b border-gray-200">
-                                        <td colspan="5" class="py-4 px-6 text-center">Geen account gegevens beschikbaar</td>
+                                        <td colspan="6" class="py-4 px-6 text-center">Geen account gegevens beschikbaar</td>
                                     </tr>
                                 @endif
                             </tbody>

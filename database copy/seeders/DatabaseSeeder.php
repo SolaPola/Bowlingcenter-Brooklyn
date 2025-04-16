@@ -13,8 +13,6 @@ use App\Models\Court;
 use App\Models\Timeslot;
 use App\Models\Reservation;
 use App\Models\Order;
-use App\Models\Spel;
-use App\Models\TypePerson;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -26,140 +24,57 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create the three default TypePerson records
-        $klantType = TypePerson::create([
-            'naam' => 'Klant',
-            'isActive' => true,
-            'createdAt' => now(),
-            'updatedAt' => now(),
-        ]);
+        // Seed person and contact records first
+        $people = Person::factory(20)->create();
 
-        $gastType = TypePerson::create([
-            'naam' => 'Gast',
-            'isActive' => true,
-            'createdAt' => now(),
-            'updatedAt' => now(),
-        ]);
+        // Create contacts
+        $contacts = Contact::factory(20)->create();
 
-        $medewerkerType = TypePerson::create([
-            'naam' => 'Medewerker',
-            'isActive' => true,
-            'createdAt' => now(),
-            'updatedAt' => now(),
-        ]);
-
-        // Create contacts first - these will include our supplier contacts
-        $contacts = Contact::factory(5)->create();
-
-        // Create only the explicitly defined people
-        $people = [];
-
-        // Create admin person with typePerson_id
-        $adminPerson = Person::create([
-            'typePerson_id' => $medewerkerType->id,
-            'firstName' => 'Admin',
-            'lastName' => 'User',
-            'isAdult' => true, // Add isAdult field
-            'isActive' => true,
-            'createdAt' => now(),
-            'updatedAt' => now(),
-        ]);
-
-        // Add a test employee
-        $employeePerson = Person::create([
-            'typePerson_id' => $medewerkerType->id,
-            'firstName' => 'Test',
-            'lastName' => 'Employee',
-            'isAdult' => true, // Add isAdult field
-            'isActive' => true,
-            'createdAt' => now(),
-            'updatedAt' => now(),
-        ]);
-
-        // Add a test customer
-        $customerPerson = Person::create([
-            'typePerson_id' => $klantType->id,
-            'firstName' => 'Test',
-            'lastName' => 'Customer',
-            'isAdult' => true, // Add isAdult field
-            'isActive' => true,
-            'createdAt' => now(),
-            'updatedAt' => now(),
-        ]);
-
-        // Add a test guest
-        $guestPerson = Person::create([
-            'typePerson_id' => $gastType->id,
-            'firstName' => 'Test',
-            'lastName' => 'Guest',
-            'isAdult' => false, // Add isAdult field
-            'isActive' => true,
-            'createdAt' => now(),
-            'updatedAt' => now(),
-        ]);
-
-        // Group people by type for later use
-        $supplierPeople = [$employeePerson, $adminPerson];
-        $customerPeople = [$customerPerson];
-        $guestPeople = [$guestPerson];
-        $people = array_merge($supplierPeople, $customerPeople, $guestPeople);
-
-        // Create admin user
-        $adminUser = User::create([
-            'name' => 'AdminUser',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('Admin1234'),
-            'created_At' => now(),
-            'updated_At' => now(),
-        ]);
-
-        // Create test user with first person and contact
-        $testPerson = $employeePerson;
-        $testContact = $contacts[0];
+        // Create test user manually with existing person and contact
+        $testPerson = $people->first();
+        $testContact = $contacts->first();
 
         $testUser = User::create([
+            // 'personId' => $testPerson->id,
+            // 'contactId' => $testContact->id,
             'email' => 'test@example.com',
             'name' => 'testuser',
             'password' => Hash::make('password'),
+            // 'isActive' => true,
+            // 'note' => 'Test user account',
             'created_At' => now(),
             'updated_At' => now(),
         ]);
 
         // Create other users with UserFactory
+        $users = User::factory(9)->create();
         $allUsers = User::all();
 
         // Seed roles for users
         foreach ($allUsers as $user) {
-            $roleName = ($user->id === $adminUser->id) ? 'Administrator' : 'Gebruiker';
             Role::factory()->create([
                 'userId' => $user->id,
-                'name' => $roleName,
             ]);
         }
 
-        // Associate people with contacts where appropriate
-        // First 7 contacts are supplier contacts
-        for ($i = 0; $i < 5; $i++) {
-            // Link supplier people with their contacts
-            // Code for linking would go here if your models have a relationship between Person and Contact
+        // Seed contacts for some of the people
+        foreach ($people->random(15) as $person) {
+            Contact::factory()->create();
         }
 
-        // Seed scores - make sure we're using the updated ScoreFactory
+        // Seed scores
         $scores = Score::factory(10)->create();
 
-        // Seed customers - use the customer people array
-        foreach ($customerPeople as $person) {
-            // Create a score for this customer
-            $score = Score::factory()->create();
-
+        // Seed customers
+        foreach ($people->random(10) as $person) {
             Customer::factory()->create([
                 'personId' => $person->id,
-                'scoreId' => $score->id,
+                'scoreId' => $scores->random()->id,
             ]);
         }
 
-        // Seed employees - use the supplier people and admin
-        foreach ($supplierPeople as $person) {
+        // Seed employees
+        foreach ($people->random(5) as $person) {
             Employee::factory()->create([
                 'personId' => $person->id,
             ]);
@@ -248,6 +163,7 @@ class DatabaseSeeder extends Seeder
         foreach ($allReservations as $reservation) {
             Order::factory()->create([
                 'reservationId' => $reservation->id,
+
             ]);
         }
 
@@ -283,41 +199,6 @@ class DatabaseSeeder extends Seeder
 
                 $attempt++;
             }
-        }
-
-        // After creating all reservations, create spel records
-        $allReservations = Reservation::all();
-        $allPeople = Person::all();
-
-        // Create at least one spel record for each reservation
-        foreach ($allReservations as $reservation) {
-            // Create 1-4 spel records per reservation (people playing)
-            $spelCount = fake()->numberBetween(1, 4);
-
-            for ($i = 0; $i < $spelCount; $i++) {
-                // Randomly select a person
-                $randomPerson = $allPeople->random();
-
-                Spel::create([
-                    'personId' => $randomPerson->id,
-                    'reservationId' => $reservation->id,
-                    'isActive' => true,
-                    'note' => fake()->boolean(20) ? fake()->sentence() : null, // 20% chance of having a note
-                    'createdAt' => now(),
-                    'updatedAt' => now(),
-                ]);
-            }
-        }
-
-        // Create some standalone spel records
-        for ($i = 0; $i < 10; $i++) {
-            Spel::factory()->create();
-        }
-
-        // Seed static reservations
-        $staticReservations = (new \Database\Factories\ReservationFactory())->staticReservations();
-        foreach ($staticReservations as $reservationData) {
-            Reservation::create($reservationData);
         }
     }
 }

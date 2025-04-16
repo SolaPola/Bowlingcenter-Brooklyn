@@ -15,7 +15,16 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
-                <a href="{{ route('reservations.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Nieuwe Reservering</a>
+                <form method="post" action="{{ route('reservation_klant.index.filter') }}">
+                    @csrf
+                    <div>
+                        <label for="date">Filter op datum:</label>
+                        <input type="date" id="date" name="date" value="{{ request('date') }}">
+                        <button type="submit" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">toon reserveringen</button>
+                    </div>
+                </form>
+                <a href="{{ route('reservation_klant.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Nieuwe Reservering</a>
+
             </div>
         </div>
     </x-slot>
@@ -32,27 +41,42 @@
                             </div>
                         @endif
 
-                        @if (count($reservations) > 0)
+                        @if (count($reservationsfilter) > 0)
                             <table class="min-w-full table-auto">
                                 <thead>
                                     <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">
+                                        <th class="py-4 px-6 text-left">Naam</th>
                                         <th class="py-4 px-6 text-left">Datum</th>
-                                        <th class="py-4 px-6 text-left">Tijd</th>
-                                        <th class="py-4 px-6 text-left">Baan</th>
-                                        <th class="py-4 px-6 text-left">Duur</th>
+                                        <th class="py-4 px-6 text-left">Aantal uren</th>
+                                        <th class="py-4 px-6 text-left">Begintijd</th>
+                                        <th class="py-4 px-6 text-left">Eindtijd</th>
+                                        <th class="py-4 px-6 text-center">Aantal Volwassenen</th>
+                                        <th class="py-4 px-6 text-center">Aantal Kinderen</th>
                                         <th class="py-4 px-6 text-center">Status</th>
-                                        <th class="py-4 px-6 text-center">Acties</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-gray-800 text-sm font-light">
-                                    @foreach ($reservations as $reservation)
-                                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                    @foreach ($reservationsfilter as $reservation)
+                                            <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                            <td class="py-3 px-6 text-left whitespace-nowrap">
+                                                {{ $reservation->firstName }} 
+                                                {{ $reservation->infix }}
+                                                 {{ $reservation->lastName }}
+                                            </td>
                                             <td class="py-3 px-6 text-left whitespace-nowrap">{{ $reservation->date }}</td>
-                                            <td class="py-3 px-6 text-left whitespace-nowrap">{{ date('H:i', strtotime($reservation->startTime)) }}</td>
-                                            <td class="py-3 px-6 text-left">{{ $reservation->courtNumber }}</td>
-                                            <td class="py-3 px-6 text-left">{{ $reservation->minutes }} minuten</td>
-
-                                            <td class="py-3 px-6 text-center">
+                                            <td class="py-3 px-6 text-left whitespace-nowrap">
+                                                @php
+                                                    $startTime = \Carbon\Carbon::parse($reservation->startTime);
+                                                    $endTime = \Carbon\Carbon::parse($reservation->endTime);
+                                                    $diffInHours = $startTime->floatDiffInHours($endTime);
+                                                    echo number_format($diffInHours, 1) . ' uur';
+                                                @endphp
+                                            </td>
+                                            <td class="py-3 px-6 text-left">{{ date('H:i', strtotime($reservation->startTime)) }}</td>
+                                            <td class="py-3 px-6 text-left">{{ date('H:i', strtotime($reservation->endTime)) }}</td>
+                                            <td class="py-3 px-6 text-left">{{ $reservation->AantalVolwassenen }}</td>
+                                            <td class="py-3 px-6 text-left">{{ $reservation->AantalKinderen }}</td>
+                                            <td class="py-3 px-4 text-center">
                                                 @if($reservation->status === 'Betaald')
                                                     <span class="bg-green-500 text-white py-1 px-3 rounded-full text-xs font-medium">Bevestigd</span>
                                                 @elseif($reservation->status === 'In behandeling')
@@ -61,16 +85,7 @@
                                                     <span class="bg-red-500 text-white py-1 px-3 rounded-full text-xs font-medium">Geannuleerd</span>
                                                 @endif
                                             </td>
-                                            <td class="py-3 px-6 text-center space-x-4">
-                                                <a href="{{ route('reservations.show', $reservation->id) }}" class="text-blue-600 hover:text-blue-800 transition duration-300">ⓘ</a>
-                                                <a href="{{ route('reservations.edit', $reservation->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
-                                                <a href="{{ route('reservations.edit.optie', $reservation->id) }}">📝</a>
-                                                <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}" class="inline-block" onsubmit="return confirm('Weet u zeker dat u deze reservering wilt annuleren?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="text-red-500 hover:text-red-700 transition duration-300">🗑️</button>
-                                                </form>
-                                            </td>
+                                            
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -82,7 +97,7 @@
                             </div>
                         @else
                             <div class="p-4">
-                                <p class="bg-red-500 text-white p-4 rounded mb-4">Geen reserveringen gevonden.</p>
+                                <p class="bg-red-500 text-white p-4 rounded mb-4">er is geen informatie over deze periode.</p>
                             </div>
                         @endif
                     </div>

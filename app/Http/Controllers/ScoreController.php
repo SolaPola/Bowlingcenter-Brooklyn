@@ -33,6 +33,7 @@ class ScoreController extends Controller
             'membershipType' => 'required|string|max:50',
         ]);
 
+        // Remove the isAdult parameter since the stored procedure doesn't expect it
         DB::statement('CALL InsertPersonScoreMembership(?, ?, ?, ?)', [
             $request->firstName,
             $request->lastName,
@@ -40,7 +41,7 @@ class ScoreController extends Controller
             $request->membershipType,
         ]);
 
-        return redirect()->route('score.index')->with('success', 'Score successfully added!');
+        return redirect()->route('score.index')->with('success', 'Score succesvol toegevoegd!');
     }
 
     // Toon een specifieke score
@@ -48,21 +49,37 @@ class ScoreController extends Controller
     {
         // Use Eloquent to fetch the record
         $score = Score::findOrFail($id);
-
+        
         return view('score.show', compact('score'));
     }
 
     // Toon het formulier om een score te bewerken
     public function edit($id)
     {
-        $score = DB::table('score')
-            ->join('customer', 'score.id', '=', 'customer.scoreId')
+        // Get score, person, and membership details by reservation ID
+        $result = DB::table('reservation')
+            ->join('customer', 'reservation.customerId', '=', 'customer.id')
             ->join('person', 'customer.personId', '=', 'person.id')
-            ->select('score.id', 'person.firstName', 'person.lastName', 'score.amount', 'customer.membershipType')
-            ->where('score.id', $id)
+            ->join('score', 'customer.scoreId', '=', 'score.id')
+            ->select('score.id as id', 'score.amount', 'person.firstName', 'person.lastName', 'customer.membershipType')
+            ->where('reservation.id', $id)
             ->first();
-
-        return view('score.edit', compact('id', 'score'));
+        
+        if (!$result) {
+            // Handle the case when score is not found
+            return redirect()->route('score.index')->with('error', 'Score niet gevonden');
+        }
+        
+        $score = (object)[
+            'id' => $result->id,
+            'amount' => $result->amount
+        ];
+        
+        $firstName = $result->firstName;
+        $lastName = $result->lastName;
+        $membershipType = $result->membershipType;
+        
+        return view('score.edit', compact('score', 'firstName', 'lastName', 'membershipType'));
     }
 
     // Werk een bestaande score bij
@@ -75,47 +92,63 @@ class ScoreController extends Controller
             'membershipType' => 'required|string|max:50',
         ]);
 
-        // Haal de huidige gegevens op
-        $currentData = DB::table('score')
-            ->join('customer', 'score.id', '=', 'customer.scoreId')
-            ->join('person', 'customer.personId', '=', 'person.id')
-            ->select('person.id as personId', 'score.id as scoreId', 'person.firstName', 'person.lastName', 'score.amount', 'customer.membershipType')
-            ->where('score.id', $id)
-            ->first();
+        try {
+            // Haal de huidige gegevens op
+            $currentData = DB::table('score')
+                ->join('customer', 'score.id', '=', 'customer.scoreId')
+                ->join('person', 'customer.personId', '=', 'person.id')
+                ->select('person.id as personId', 'score.id as scoreId', 'person.firstName', 'person.lastName', 'score.amount', 'customer.membershipType')
+                ->where('score.id', $id)
+                ->first();
 
-        // Update alleen de velden die zijn gewijzigd
-        DB::statement('CALL EditPersonScoreMembership(?, ?, ?, ?, ?, ?)', [
-            $currentData->personId,
-            $request->firstName !== $currentData->firstName ? $request->firstName : $currentData->firstName,
-            $request->lastName !== $currentData->lastName ? $request->lastName : $currentData->lastName,
-            $currentData->scoreId,
-            $request->amount !== $currentData->amount ? $request->amount : $currentData->amount,
-            $request->membershipType !== $currentData->membershipType ? $request->membershipType : $currentData->membershipType,
-        ]);
+            if (!$currentData) {
+                return redirect()->route('score.index')->with('error', 'Score niet gevonden');
+            }
 
-        return redirect()->route('score.index')->with('success', 'Score successfully updated!');
+            // Update alleen de velden die zijn gewijzigd
+            DB::statement('CALL EditPersonScoreMembership(?, ?, ?, ?, ?, ?)', [
+                $currentData->personId,
+                $request->firstName !== $currentData->firstName ? $request->firstName : $currentData->firstName,
+                $request->lastName !== $currentData->lastName ? $request->lastName : $currentData->lastName,
+                $currentData->scoreId,
+                $request->amount !== $currentData->amount ? $request->amount : $currentData->amount,
+                $request->membershipType !== $currentData->membershipType ? $request->membershipType : $currentData->membershipType,
+            ]);
+
+            return redirect()->route('score.index')->with('success', 'Score succesvol bijgewerkt!');
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Fout bij het bijwerken van score: ' . $e->getMessage());
+            return redirect()->route('score.index')->with('error', 'Er is een fout opgetreden bij het bijwerken van de score: ' . $e->getMessage());
+        }
     }
 
     // Verwijder een score
     public function destroy($id)
     {
-        // Haal de customerId op die gekoppeld is aan de scoreId
-        $customer = DB::table('customer')->where('scoreId', $id)->first();
+        try {
+            // Haal de customerId op die gekoppeld is aan de scoreId
+            $customer = DB::table('customer')->where('scoreId', $id)->first();
 
-        if ($customer) {
-            // Verwijder gerelateerde gegevens uit de reservation-tabel
-            DB::table('reservation')->where('customerId', $customer->id)->delete();
+            if ($customer) {
+                // Verwijder gerelateerde gegevens uit de reservation-tabel
+                DB::table('reservation')->where('customerId', $customer->id)->delete();
 
-            // Verwijder uit de customer-tabel
-            DB::table('customer')->where('id', $customer->id)->delete();
+                // Verwijder uit de customer-tabel
+                DB::table('customer')->where('id', $customer->id)->delete();
+                
+                // Verwijder uit de person-tabel
+                DB::table('person')->where('id', $customer->personId)->delete();
+            }
+
+            // Verwijder uit de score-tabel
+            DB::table('score')->where('id', $id)->delete();
+
+            return redirect()->route('score.index')->with('success', 'Score succesvol verwijderd!');
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Fout bij het verwijderen van score: ' . $e->getMessage());
+            return redirect()->route('score.index')->with('error', 'Er is een fout opgetreden bij het verwijderen van de score: ' . $e->getMessage());
         }
-
-        // Verwijder uit de score-tabel
-        DB::table('score')->where('id', $id)->delete();
-
-        // Verwijder uit de person-tabel
-        DB::table('person')->where('id', $customer->personId)->delete();
-
-        return redirect()->route('score.index')->with('success', 'Score successfully deleted!');
     }
 };
