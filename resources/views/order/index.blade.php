@@ -1,148 +1,142 @@
-{{-- filepath: c:\Users\solap\Herd\proefbowling\resources\views\order\index.blade.php --}}
 <x-app-layout>
-
-    <!DOCTYPE html>
-    <html lang="en">
-
-    <head>
-        <meta charset="UTF-8">
-        <title>Homepage</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
-
-    <body class="bg-white text-gray-800">
-
-        <!-- Header -->
-        <header class="bg-yellow-400 shadow">
-            <div class="max-w-7xl mx-auto px-4 py-6 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-900">Order overview</h1>
+    <x-slot name="header">
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <h2 class="font-semibold text-xl text-white-900 leading-tight">
+                {{ __('Bestellingen Overzicht') }}
+            </h2>
+            <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+                <a href="{{ route('order.create') }}" class="bg-yellow-500 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-600 transform hover:scale-105">
+                    Nieuwe Bestellingen
+                </a>
+                <label class="flex items-center">
+                    <span class="mr-2 text-white-900 toon">Toon Gegevens</span>
+                    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" id="dataToggle"
+                            class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+                            checked />
+                        <label for="dataToggle"
+                            class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                    </div>
+                </label>
             </div>
-        </header>
-
-        {{-- filepath: c:\Users\solap\Herd\proefbowling\resources\views\order\index.blade.php --}}
-        <div class="flex justify-center mt-6">
-            <a href="{{ route('order.create') }}" class="px-4 py-2 bg-yellow-500 text-white rounded-md">Create
-            Booking</a>
         </div>
+    </x-slot>
 
-        <div class="container mx-auto mt-8">
-            <table class="table-auto w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Order Number</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Order Date</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Package Type</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Edit</th>
-                        <th
-                            class="px-4 py-2 border-b-2 border-r border-gray-300 dark:border-gray-700 text-left leading-4 tracking-wider">
-                            Delete</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($orders as $order)
-                        <tr>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $order->orderNumber }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $order->orderDate }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                {{ $order->packageType }}</td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                <a href="{{ route('order.edit', $order->id) }}" class="text-blue-500">Edit</a>
-                            </td>
-                            <td class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700">
-                                <button type="button" class="text-red-500"
-                                    onclick="showDeleteModal({{ $order->id }})">Delete</button>
-                            </td>
-                        </tr>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="10"
-                                class="px-4 py-2 border-b border-r border-gray-300 dark:border-gray-700 text-center text-red-500">
-                                No Order available
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+    <div id="dataContainer" class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                @if (session('success'))
+                    <div id="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('success') }}</span>
+                    </div>
+                @endif
 
-            <!-- Delete Confirmation Modal -->
-            <div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-                    <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-300">Confirm Delete</h2>
-                    <p class="my-4 text-gray-500 dark:text-gray-400">Are you sure you want to delete this item?</p>
-                    <form id="deleteForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="button" class="mt-6 px-4 py-2 bg-gray-600 text-white rounded-lg"
-                            onclick="hideDeleteModal()">Cancel</button>
-                        <button type="submit" class="mt-6 px-4 py-2 bg-red-600 text-white rounded-lg">Delete</button>
-                    </form>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-800 uppercase text-sm font-medium leading-normal">
+                                <th class="py-4 px-6 text-left">Ordernummer</th>
+                                <th class="py-4 px-6 text-left">Datum</th>
+                                <th class="py-4 px-6 text-center">Pakket</th>
+                                <th class="py-4 px-6 text-right">Bewerken</th>
+                                <th class="py-4 px-6 text-right">Verwijderen</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-800 text-sm font-light">
+                            @forelse ($orders as $order)
+                                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                    <td class="py-3 px-6">{{ $order->orderNumber }}</td>
+                                    <td class="py-3 px-6">{{ $order->orderDate }}</td>
+                                    <td class="py-3 px-6 text-center">{{ $order->packageType }}</td>
+                                    <td class="py-3 px-6 text-right">
+                                        <a href="{{ route('order.edit', $order->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
+                                    </td>
+                                    <td class="py-3 px-6 text-right">
+                                        <button type="button" class="text-red-500 hover:text-red-700 transition duration-300"
+                                            onclick="showDeleteModal({{ $order->id }})">🗑️</button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="py-4 px-6 text-center text-red-500">Geen orders gevonden.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            <!-- Script to show and hide the delete modal -->
-<script>
-    function showDeleteModal(id) {
-        var action = '{{ route('order.destroy', ':id') }}';
-        action = action.replace(':id', id);
-        document.getElementById('deleteForm').action = action;
-        document.getElementById('deleteModal').classList.remove('hidden');
-    }
-
-    function hideDeleteModal() {
-        document.getElementById('deleteModal').classList.add('hidden');
-    }
-
-    // Hide success message after 5 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-        setTimeout(function() {
-            var successMessage = document.getElementById('successMessage');
-            if (successMessage) {
-                successMessage.style.display = 'none';
-            }
-        }, 5000);
-    });
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         </div>
-        <!-- Footer -->
-        <footer class="bg-yellow-400 py-6 mt-20">
-            <div class="max-w-7xl mx-auto text-center text-gray-900 font-medium">
-                &copy; 2025 MyWebsite. All rights reserved.
-            </div>
-        </footer>
+    </div>
 
-    </body>
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 class="text-xl font-semibold text-gray-800">Weet je het zeker?</h2>
+            <p class="text-gray-600 mt-2">Deze order zal permanent worden verwijderd.</p>
+            <form id="deleteForm" method="POST" class="mt-4 flex justify-center space-x-4">
+                @csrf
+                @method('DELETE')
+                <button type="button" onclick="hideDeleteModal()" class="bg-gray-500 text-white px-4 py-2 rounded">Annuleer</button>
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Verwijder</button>
+            </form>
+        </div>
+    </div>
 
-    </html>
+    <!-- Error Container for when toggle is off -->
+    <div id="errorContainer" class="py-12 hidden ml-64">
+        <p class="text-red-500">Er is geen bestellingen beschikbaar, probeer later opnieuw</p>
+    </div>
 
+    <script>
+        function showDeleteModal(id) {
+            const action = '{{ route('order.destroy', ':id') }}'.replace(':id', id);
+            document.getElementById('deleteForm').action = action;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
 
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
 
+        document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                const successMessage = document.getElementById('successMessage');
+                if (successMessage) {
+                    successMessage.style.display = 'none';
+                }
+            }, 5000);
 
+            // Add toggle functionality
+            document.getElementById('dataToggle').addEventListener('change', function() {
+                const dataContainer = document.getElementById('dataContainer');
+                const errorContainer = document.getElementById('errorContainer');
+                if (this.checked) {
+                    dataContainer.classList.remove('hidden');
+                    errorContainer.classList.add('hidden');
+                } else {
+                    dataContainer.classList.add('hidden');
+                    errorContainer.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
 
+    <style>
+        h2 {
+            color: #fff;
+        }
+
+        .toon {
+            color: #fff;
+        }
+
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #38A169;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #38A169;
+        }
+    </style>
 </x-app-layout>
