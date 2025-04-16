@@ -56,17 +56,30 @@ class ScoreController extends Controller
     // Toon het formulier om een score te bewerken
     public function edit($id)
     {
-        $score = DB::select('SELECT id, amount FROM score WHERE id = ?', [$id]);
+        // Get score, person, and membership details by reservation ID
+        $result = DB::table('reservation')
+            ->join('customer', 'reservation.customerId', '=', 'customer.id')
+            ->join('person', 'customer.personId', '=', 'person.id')
+            ->join('score', 'customer.scoreId', '=', 'score.id')
+            ->select('score.id as id', 'score.amount', 'person.firstName', 'person.lastName', 'customer.membershipType')
+            ->where('reservation.id', $id)
+            ->first();
         
-        // The DB::select returns an array of objects, so we need to get the first one
-        $score = $score[0] ?? null;
-        
-        if (!$score) {
+        if (!$result) {
             // Handle the case when score is not found
             return redirect()->route('score.index')->with('error', 'Score niet gevonden');
         }
         
-        return view('score.edit', compact('score'));
+        $score = (object)[
+            'id' => $result->id,
+            'amount' => $result->amount
+        ];
+        
+        $firstName = $result->firstName;
+        $lastName = $result->lastName;
+        $membershipType = $result->membershipType;
+        
+        return view('score.edit', compact('score', 'firstName', 'lastName', 'membershipType'));
     }
 
     // Werk een bestaande score bij

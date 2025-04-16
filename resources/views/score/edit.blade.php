@@ -21,7 +21,7 @@
                                     Voornaam:
                                 </label>
                                 <input type="text" name="firstName" id="firstName" 
-                                    value="{{ old('firstName', $firstName ?? '') }}"
+                                    value="{{ old('firstName', $firstName) }}"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 
                                 @error('firstName')
@@ -34,7 +34,7 @@
                                     Achternaam:
                                 </label>
                                 <input type="text" name="lastName" id="lastName" 
-                                    value="{{ old('lastName', $lastName ?? '') }}"
+                                    value="{{ old('lastName', $lastName) }}"
                                     class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                                 
                                 @error('lastName')
@@ -60,9 +60,9 @@
                                     Lidmaatschap Type:
                                 </label>
                                 <select name="membershipType" id="membershipType" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                                    <option value="Basis" {{ old('membershipType', $membershipType ?? '') == 'Basis' ? 'selected' : '' }}>Basis</option>
-                                    <option value="Premium" {{ old('membershipType', $membershipType ?? '') == 'Premium' ? 'selected' : '' }}>Premium</option>
-                                    <option value="VIP" {{ old('membershipType', $membershipType ?? '') == 'VIP' ? 'selected' : '' }}>VIP</option>
+                                    <option value="Basis" {{ old('membershipType', $membershipType) == 'Basis' ? 'selected' : '' }}>Basis</option>
+                                    <option value="Premium" {{ old('membershipType', $membershipType) == 'Premium' ? 'selected' : '' }}>Premium</option>
+                                    <option value="VIP" {{ old('membershipType', $membershipType) == 'VIP' ? 'selected' : '' }}>VIP</option>
                                 </select>
                                 
                                 @error('membershipType')
