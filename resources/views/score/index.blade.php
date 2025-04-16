@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/score/index.blade.php --}}
 <x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
@@ -16,6 +15,7 @@
                             class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
                     </div>
                 </label>
+                <a href="{{ route('score.create') }}" class="bg-blue-600 text-white px-5 py-3 rounded-md transition duration-300 hover:bg-green-700 transform hover:scale-105">Nieuwe Score</a>
             </div>
         </div>
     </x-slot>

@@ -40,7 +40,7 @@ class ScoreController extends Controller
             $request->membershipType,
         ]);
 
-        return redirect()->route('score.index')->with('success', 'Score successfully added!');
+        return redirect()->route('score.index')->with('success', 'Score succesvol toegevoegd!');
     }
 
     // Toon een specifieke score
@@ -62,7 +62,7 @@ class ScoreController extends Controller
         
         if (!$score) {
             // Handle the case when score is not found
-            return redirect()->route('score.index')->with('error', 'Score not found');
+            return redirect()->route('score.index')->with('error', 'Score niet gevonden');
         }
         
         return view('score.edit', compact('score'));
@@ -88,7 +88,7 @@ class ScoreController extends Controller
                 ->first();
 
             if (!$currentData) {
-                return redirect()->route('score.index')->with('error', 'Score not found');
+                return redirect()->route('score.index')->with('error', 'Score niet gevonden');
             }
 
             // Update alleen de velden die zijn gewijzigd
@@ -101,11 +101,11 @@ class ScoreController extends Controller
                 $request->membershipType !== $currentData->membershipType ? $request->membershipType : $currentData->membershipType,
             ]);
 
-            return redirect()->route('score.index')->with('success', 'Score successfully updated!');
+            return redirect()->route('score.index')->with('success', 'Score succesvol bijgewerkt!');
         } catch (\Exception $e) {
             // Log the error
-            \Log::error('Error updating score: ' . $e->getMessage());
-            return redirect()->route('score.index')->with('error', 'An error occurred while updating the score: ' . $e->getMessage());
+            \Log::error('Fout bij het bijwerken van score: ' . $e->getMessage());
+            return redirect()->route('score.index')->with('error', 'Er is een fout opgetreden bij het bijwerken van de score: ' . $e->getMessage());
         }
     }
 
@@ -130,11 +130,11 @@ class ScoreController extends Controller
             // Verwijder uit de score-tabel
             DB::table('score')->where('id', $id)->delete();
 
-            return redirect()->route('score.index')->with('success', 'Score successfully deleted!');
+            return redirect()->route('score.index')->with('success', 'Score succesvol verwijderd!');
         } catch (\Exception $e) {
             // Log the error
-            \Log::error('Error deleting score: ' . $e->getMessage());
-            return redirect()->route('score.index')->with('error', 'An error occurred while deleting the score: ' . $e->getMessage());
+            \Log::error('Fout bij het verwijderen van score: ' . $e->getMessage());
+            return redirect()->route('score.index')->with('error', 'Er is een fout opgetreden bij het verwijderen van de score: ' . $e->getMessage());
         }
     }
 };
