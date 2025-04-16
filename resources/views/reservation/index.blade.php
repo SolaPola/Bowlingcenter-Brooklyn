@@ -64,7 +64,7 @@
                                             <td class="py-3 px-6 text-center space-x-4">
                                                 <a href="{{ route('reservations.show', $reservation->id) }}" class="text-blue-600 hover:text-blue-800 transition duration-300">ⓘ</a>
                                                 <a href="{{ route('reservations.edit', $reservation->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
-                                                <a href="{{ route('reservations.edit.optie', $reservation->id) }}" class="text-yellow-500 hover:text-yellow-700 transition duration-300">✎</a>
+                                                <a href="{{ route('reservations.edit.optie', $reservation->id) }}">📝</a>
                                                 <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}" class="inline-block" onsubmit="return confirm('Weet u zeker dat u deze reservering wilt annuleren?');">
                                                     @csrf
                                                     @method('DELETE')
