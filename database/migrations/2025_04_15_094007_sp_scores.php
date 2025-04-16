@@ -54,6 +54,44 @@ return new class extends Migration
             SELECT id, amount FROM score WHERE id = p_scoreId;
         END
         ');
+
+        DB::unprepared('
+        DROP PROCEDURE IF EXISTS InsertPersonScoreMembership;
+        CREATE PROCEDURE InsertPersonScoreMembership(
+            IN p_firstName VARCHAR(100),
+            IN p_lastName VARCHAR(100),
+            IN p_amount INT,
+            IN p_membershipType VARCHAR(50)
+        )
+        BEGIN
+            DECLARE personId INT;
+            DECLARE scoreId INT;
+            
+            -- Insert into person table with default isAdult value (1 for true)
+            -- and current timestamp for createdAt and updatedAt
+            INSERT INTO person (firstName, lastName, isAdult, createdAt, updatedAt) 
+            VALUES (p_firstName, p_lastName, 1, NOW(), NOW());
+            
+            SET personId = LAST_INSERT_ID();
+            
+            -- Insert into score table with current timestamp for createdAt and updatedAt
+            INSERT INTO score (amount, createdAt, updatedAt) 
+            VALUES (p_amount, NOW(), NOW());
+            
+            SET scoreId = LAST_INSERT_ID();
+            
+            -- Insert into customer table with current timestamp for createdAt and updatedAt
+            INSERT INTO customer (personId, scoreId, membershipType, createdAt, updatedAt) 
+            VALUES (personId, scoreId, p_membershipType, NOW(), NOW());
+            
+            -- Return the inserted data
+            SELECT p.firstName, p.lastName, s.amount, c.membershipType
+            FROM person p
+            JOIN customer c ON p.id = c.personId
+            JOIN score s ON c.scoreId = s.id
+            WHERE p.id = personId;
+        END
+        ');
     }
 
     /**
@@ -63,5 +101,6 @@ return new class extends Migration
     {
         DB::unprepared('DROP PROCEDURE IF EXISTS GetScoreOverview');
         DB::unprepared('DROP PROCEDURE IF EXISTS EditIndex');
+        DB::unprepared('DROP PROCEDURE IF EXISTS InsertPersonScoreMembership');
     }
 };

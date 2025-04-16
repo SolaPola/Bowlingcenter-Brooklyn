@@ -33,6 +33,7 @@ class ScoreController extends Controller
             'membershipType' => 'required|string|max:50',
         ]);
 
+        // Remove the isAdult parameter since the stored procedure doesn't expect it
         DB::statement('CALL InsertPersonScoreMembership(?, ?, ?, ?)', [
             $request->firstName,
             $request->lastName,
