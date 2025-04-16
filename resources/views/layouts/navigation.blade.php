@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-yellow-400 border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -16,17 +16,14 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     <x-nav-link :href="route('order.index')" :active="request()->routeIs('order.index')">
-                        Order Overview
+                        {{ __('Bestellingen') }}
                     </x-nav-link>
                     <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.*')">
-                        {{ __('Reserveren') }}
+                        {{ __('Reserveren Praktijk') }}
                     </x-nav-link>
                     <x-nav-link :href="route('reservation_klant.index')" :active="request()->routeIs('reservations.*')">
                         {{ __('Reserveren klant') }}
                     </x-nav-link>
-
-
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                         {{ __('gebruikers') }}
                     </x-nav-link>
@@ -40,7 +37,7 @@
                         {{ __('Accounts') }}
                     </x-nav-link>
                     <x-nav-link :href="route('score.index')" :active="request()->routeIs('score.index')">
-                       Score Overview
+                        {{ __('speler scores') }}
                     </x-nav-link>
                 </div>
             </div>
