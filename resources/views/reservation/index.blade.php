@@ -19,6 +19,7 @@
             </div>
         </div>
     </x-slot>
+    <!-- bg-yellow-400 -->
 
     <div id="dataContainer" class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
