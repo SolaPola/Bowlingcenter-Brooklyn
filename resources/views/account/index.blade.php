@@ -7,16 +7,7 @@
             <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                 <form action="{{ route('accounts.index') }}" method="GET" class="flex items-center space-x-4">
                     <div class="flex items-center space-x-4 bg-white p-2 rounded-lg shadow-md">
-                        <input type="text" 
-                               name="start_date" 
-                               class="rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" 
-                               placeholder="Kies startdatum"
-                               value="{{ request('start_date') }}"
-                               id="start_date">
-                        
-                        <span class="text-gray-500 font-medium">tot</span>
-                        
-                        <input type="text" 
+                       <input type="text" 
                                name="end_date" 
                                class="rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" 
                                placeholder="Kies einddatum"

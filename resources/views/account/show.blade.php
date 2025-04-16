@@ -4,11 +4,6 @@
             <h2 class="font-semibold text-xl text-white-900 leading-tight">
                 {{ __('Klantgegevens') }}
             </h2>
-            <div>
-                <a href="{{ route('accounts.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded-lg shadow hover:bg-gray-600">
-                    Terug naar overzicht
-                </a>
-            </div>
         </div>
     </x-slot>
 
