@@ -22,22 +22,16 @@
                         {{ __('Reserveren Praktijk') }}
                     </x-nav-link>
                     <x-nav-link :href="route('reservation_klant.index')" :active="request()->routeIs('reservations.*')">
-                        {{ __('Reserveren klant') }}
+                        {{ __('Reserveren Klant') }}
                     </x-nav-link>
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                         {{ __('gebruikers') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('order.index')" :active="request()->routeIs('order.index')">
-                        {{ __('Bestellingen') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('reservations.index')" :active="request()->routeIs('reservations.index')">
-                        {{ __('Reserveren') }}
                     </x-nav-link>
                     <x-nav-link :href="route('accounts.index')" :active="request()->routeIs('accounts.index')">
                         {{ __('Accounts') }}
                     </x-nav-link>
                     <x-nav-link :href="route('score.index')" :active="request()->routeIs('score.index')">
-                        {{ __('speler scores') }}
+                        {{ __('score overzicht') }}
                     </x-nav-link>
                 </div>
             </div>
